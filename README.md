@@ -3,6 +3,8 @@ Art follows Brütal Legends / Guitar Hero.
 
 Sub title: If you don't have a headache after playing, you are doing it wrong.
 
+See all the moves at the YouTube Video: https://www.youtube.com/watch?v=z_1TzJ93xWY
+
 ## Input / Game Mechanics
 
 ### Input
