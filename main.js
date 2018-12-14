@@ -5,6 +5,7 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 /******* End of the create scene function ******/
 
 let intro = new Intro();
+let instructions = new Instructions();
 let menu = new Menu();
 let game = new Game();
 let end = new TheEnd();
@@ -25,16 +26,22 @@ function handlKeyPress(event) {
         case "2":
             // Register a render loop to repeatedly render the scene
             engine.runRenderLoop(function () {
-                menu.render();
+                instructions.render();
             });
             break;
         case "3":
             // Register a render loop to repeatedly render the scene
             engine.runRenderLoop(function () {
-                game.render();
+                menu.render();
             });
             break;
         case "4":
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                game.render();
+            });
+            break;
+        case "5":
             // Register a render loop to repeatedly render the scene
             engine.runRenderLoop(function () {
                 end.render();

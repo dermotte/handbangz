@@ -25,15 +25,26 @@
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
 
+    <script src="actionMap.js" defer></script>
+    <script src="gamepad.js" defer></script>
     <script src="intro.js" defer></script>
+    <script src="instructions.js" defer></script>
     <script src="game.js" defer></script>
     <script src="menu.js" defer></script>
     <script src="theEnd.js" defer></script>
     <script src="main.js" defer></script>
+    
 </head>
 
 <body onkeypress="handlKeyPress(event)">
-    <div id="userInfo">Press 1,2,3,4 for scenes</div>
+    <div id="userInfo">
+        All Scenes (Press Keys): <br>
+        1: Introduction <br>
+        2: Instructions <br>
+        3: Menu <br>
+        4: Game <br>
+        5: The End
+    </div>
     <canvas id="renderCanvas" touch-action="none"></canvas> //touch-action="none" for best results from PEP
 
 </body>
