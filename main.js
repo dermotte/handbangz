@@ -10,12 +10,41 @@ let game = new Game();
 let end = new TheEnd();
 
 
-intro.createScene(); //Call the createScene function
+function handlKeyPress(event) {
+    console.log(event);
+    document.querySelector("#userInfo").innerHTML = "";
+    switch(event.key)
+    {
 
-// Register a render loop to repeatedly render the scene
-engine.runRenderLoop(function () {
-    intro.render();
-});
+        case "1":
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                intro.render();
+            });
+            break;
+        case "2":
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                menu.render();
+            });
+            break;
+        case "3":
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                game.render();
+            });
+            break;
+        case "4":
+            // Register a render loop to repeatedly render the scene
+            engine.runRenderLoop(function () {
+                end.render();
+            });
+            break;
+        default:
+            break;
+    }
+}
+
 
 // Watch for browser/canvas resize events
 window.addEventListener("resize", function () {
