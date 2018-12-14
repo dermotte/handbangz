@@ -30,7 +30,7 @@ class Intro {
         //Applying materials
         videoPlane.material = videoMat;
 
-        let htmlVideo = videoMat.diffuseTexture.video;
+        let htmlVideo = videoMat.diffuseTexture.video; // reflections
 
         var playing = false;
 
