@@ -16,6 +16,8 @@ class Game {
         // lights
         this.ambientLight;
         this.drumSpotlight;
+        this.leftSpotlight;
+        this.rightSpotlight;
 
         this.createScene();
     }
@@ -90,6 +92,8 @@ class Game {
         this.ambientLight.intensity = 0.2; // Very dim hemispheric light for the case that all spotlights are off
 
         this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 7), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
+        this.leftSpotlight = new BABYLON.SpotLight("leftSpotlight", new BABYLON.Vector3(3.5, 10, 7), new BABYLON.Vector3(0, -1, -0.3), Math.PI / 10, 2, scene);
+        this.rightSpotlight = new BABYLON.SpotLight("rightSpotlight", new BABYLON.Vector3(-3.5, 10, 7), new BABYLON.Vector3(0, -1, -0.3), Math.PI / 10, 2, scene);
 
         //var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
 
