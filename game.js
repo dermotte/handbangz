@@ -1,6 +1,8 @@
 class Game {
     constructor() {
-        this.scene;
+        this.scene;        
+        this.actionMap = new ActionMap(this);
+        this.gamepad = new Gamepad(this);
     }
 
     createScene () {
