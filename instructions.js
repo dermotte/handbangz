@@ -14,14 +14,14 @@ class Instructions {
         // Setup environment
         var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 10, 50), scene);
         var light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 10, -20), scene);
-        var camera = new BABYLON.ArcRotateCamera("Camera", 0, Math.PI / 2, 10, new BABYLON.Vector3(0,0,0), scene);
+        var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2, 15, new BABYLON.Vector3(0,0,0), scene);
 
         camera.attachControl(canvas);
 
         // Video plane
-        var videoPlane = BABYLON.Mesh.CreatePlane("Screen", 50, scene);
-        videoPlane.position.y = 10;
-        videoPlane.position.z = 30;
+        var videoPlane = BABYLON.MeshBuilder.CreatePlane("Screen", {width: 16, height: 9}, scene);
+        videoPlane.position.y = 0;
+        videoPlane.position.z = 0;
 
         // Video material
         var videoMat = new BABYLON.StandardMaterial("textVid", scene);
