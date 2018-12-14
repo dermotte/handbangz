@@ -22,4 +22,8 @@ class Game {
         this.scene =  scene;
     }
 
+    render() {
+        this.scene.render();
+    }
+
 }

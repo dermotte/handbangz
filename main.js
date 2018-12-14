@@ -14,7 +14,7 @@ intro.createScene(); //Call the createScene function
 
 // Register a render loop to repeatedly render the scene
 engine.runRenderLoop(function () {
-    intro.scene.render();
+    intro.render();
 });
 
 // Watch for browser/canvas resize events

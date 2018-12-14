@@ -22,4 +22,8 @@ class TheEnd {
         this.scene =  scene;
     }
 
+    render() {
+        this.scene.render();
+    }
+
 }

@@ -5,7 +5,7 @@ class Intro {
         this.scene;
     }
 
-    createScene () {
+    createScene() {
 
         // Create the scene space
         var scene = new BABYLON.Scene(engine);
@@ -22,5 +22,9 @@ class Intro {
         var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
 
         this.scene =  scene;
+    }
+
+    render() {
+        this.scene.render();
     }
 }

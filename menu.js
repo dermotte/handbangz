@@ -22,4 +22,8 @@ class Menu {
         this.scene =  scene;
     }
 
+    render() {
+        this.scene.render();
+    }
+
 }
