@@ -5,6 +5,10 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 /******* End of the create scene function ******/
 
 let intro = new Intro();
+let menu = new Menu();
+let game = new Game();
+let end = new TheEnd();
+
 
 intro.createScene(); //Call the createScene function
 
