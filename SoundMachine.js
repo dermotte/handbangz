@@ -56,7 +56,12 @@ class SoundMachine {
         curSong.onended = () => {
             this.songChain(nextSong, scene);
         };
+
+
         curSong.play();
+        if (game) {
+            game.startLightSwitching();
+        }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
         // this.currentSong.onended = () => {this.songChain(nextSong, scene);};

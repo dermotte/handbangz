@@ -112,6 +112,7 @@ class Game {
         let assetsManager = new BABYLON.AssetsManager(scene);
         let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "speaker_floor.obj");
         meshTask.onSuccess = function (task) {
+
             task.loadedMeshes[0].position = new BABYLON.Vector3(-4, 1, 6);
             task.loadedMeshes[1].position = new BABYLON.Vector3(-4, 1, 6);
             task.loadedMeshes[0].material.maxSimultaneousLights = 8;
@@ -316,6 +317,7 @@ class Game {
     }
 
     startLightSwitching() {
+        if(this.flashlightInterval) clearInterval(this.flashlightInterval);
         // Interval
         this.flashlightInterval = setInterval(() => {this.toggleGreenRed();}, 500);
     }
