@@ -3,15 +3,18 @@ class Menu {
     constructor() {
         this.scene;
         this.state;
+        this.play;
+        this.intro;
+        this.credits;
     }
 
-    createScene () {
+    createScene() {
 
         // Create the scene space
         let scene = new BABYLON.Scene(engine);
 
         // Add a camera to the scene and attach it to the canvas
-        let camera = new BABYLON.UniversalCamera("UniversalCamera",new BABYLON.Vector3(0,-1,-5), scene);
+        let camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 0, -5), scene);
         camera.setTarget(BABYLON.Vector3.Zero());
         // camera.attachControl(canvas, true);
 
@@ -31,25 +34,28 @@ class Menu {
 
         // scene.meshes[2].position.y = -2
         var assetsManager = new BABYLON.AssetsManager(scene);
-        var meshTask = assetsManager.addMeshTask("task01","", "assets/models/", "Play.obj");
+        var meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "Play.obj");
         meshTask.onSuccess = function (task) {
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 1, 0);
+            this.play = task.loadedMeshes[0];
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 1, 2);
         };
-        meshTask = assetsManager.addMeshTask("task02","", "assets/models/", "Credits.obj");
+        meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "Credits.obj");
         meshTask.onSuccess = function (task) {
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 0);
+            this.credits = task.loadedMeshes[0];
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
         };
-        meshTask = assetsManager.addMeshTask("task03","", "assets/models/", "Instructions.obj");
+        meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "Instructions.obj");
         meshTask.onSuccess = function (task) {
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 0);
+            this.intro = task.loadedMeshes[0];
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
         };
         assetsManager.load();
 
-        this.scene =  scene;
+        this.scene = scene;
     }
 
     onLoad() {
-        this.state = 1;
+        this.state = 0;
     }
 
     isReady() {
@@ -57,6 +63,18 @@ class Menu {
     }
 
     render() {
+        if (this.state == 0)
+            this.scene.meshes[0].position.z = 0;
+        else
+            this.scene.meshes[0].position.z = 2;
+        if (this.state == 1)
+            this.scene.meshes[1].position.z = 0;
+        else
+            this.scene.meshes[1].position.z = 2;
+        if (this.state == 2)
+            this.scene.meshes[2].position.z = 0;
+        else
+            this.scene.meshes[2].position.z = 2;
         this.scene.render();
     }
 
