@@ -40,6 +40,7 @@ Extra encouraging sounds to be played in the game
 
 ### Progression in the Game
 
+1. Fool
 1. Pussy
 1. Softie
 1. Real Fan
