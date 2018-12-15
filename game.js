@@ -48,6 +48,11 @@ class Game {
         // Stats of the current game
         this.score = 0;
         this.lastHeadUp = new Date().getTime();
+
+        // sound
+        this.soundMachine = new SoundMachine();
+        // this.currentSong = null;
+
     }
 
     createScene () {
@@ -314,6 +319,7 @@ class Game {
 
     onLoad() {
         self.score = 0;
+        this.soundMachine.startLoop(this.scene);
     }
 
     isReady() {

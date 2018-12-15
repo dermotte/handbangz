@@ -10,9 +10,8 @@ let menu = new Menu();
 let game = new Game();
 let end = new TheEnd();
 
-let currentScene = menu;
-menu.createScene();
-menu.onLoad();
+let currentScene = null;
+setNewScene(menu);
 
 function handlKeyPress(event) {
     console.log(event);
