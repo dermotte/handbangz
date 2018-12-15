@@ -108,46 +108,55 @@ class Game {
         this.speakerLeft.position.z = 1.2;
         this.speakerLeft.material = material;
 
+        let monitordimension = {height: 1, width: 2, depth: 1};
+
+        // this.centerMonitor = BABYLON.MeshBuilder.CreateBox("centermonitor", monitordimension, scene);
+        // this.centerMonitor.position.y = 1.5;
+        // this.centerMonitor.position.x = 0;
+        // this.centerMonitor.position.z = 6;
+        // this.centerMonitor.material = material;
+
+        // this.leftMonitor = BABYLON.MeshBuilder.CreateBox("leftmonitor", monitordimension, scene);
+        // this.leftMonitor.position.y = 1.5;
+        // this.leftMonitor.position.x = 5;
+        // this.leftMonitor.position.z = 6;
+        // this.leftMonitor.material = material;
+        //
+        // this.rightMonitor = BABYLON.MeshBuilder.CreateBox("rightmonitor", monitordimension, scene);
+        // this.rightMonitor.position.y = 1.5;
+        // this.rightMonitor.position.x = -5;
+        // this.rightMonitor.position.z = 6;
+        // this.rightMonitor.material = material;
+
         // Meshes on the stage:
         let assetsManager = new BABYLON.AssetsManager(scene);
         let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "speaker_floor.obj");
         meshTask.onSuccess = function (task) {
+
             task.loadedMeshes[0].position = new BABYLON.Vector3(-4, 1, 6);
             task.loadedMeshes[1].position = new BABYLON.Vector3(-4, 1, 6);
-            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
-            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
             let bb1 = task.loadedMeshes[0].clone();
             let bb2 = task.loadedMeshes[1].clone();
 
             bb1.position = new BABYLON.Vector3(4, 1, 6);
             bb2.position = new BABYLON.Vector3(4, 1, 6);
-            bb1.material.maxSimultaneousLights = 8;
-            bb2.material.maxSimultaneousLights = 8;
 
             let bm1 = task.loadedMeshes[0].clone();
             let bm2 = task.loadedMeshes[1].clone();
 
             bm1.position = new BABYLON.Vector3(0, 1, 6);
             bm2.position = new BABYLON.Vector3(0, 1, 6);
-            bm1.material.maxSimultaneousLights = 8;
-            bm2.material.maxSimultaneousLights = 8;
         };
-        meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "speaker_tower.obj");
-        meshTask.onSuccess = function (task) {
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-8, 1, 6);
-            task.loadedMeshes[1].position = new BABYLON.Vector3(-8, 1, 6);
-
-            let bb1 = task.loadedMeshes[0].clone();
-            let bb2 = task.loadedMeshes[1].clone();
-
-            bb1.position = new BABYLON.Vector3(8, 1, 6);
-            bb2.position = new BABYLON.Vector3(8, 1, 6);
-        };
-        meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "helmet_horns.obj");
-        meshTask.onSuccess = function (task) {
-            task.loadedMeshes[0].position = new BABYLON.Vector3(0, 1.5, 2);
-            task.loadedMeshes[1].position = new BABYLON.Vector3(0, 1.5, 2);
-        };
+        // meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "speaker_tower.obj");
+        // meshTask.onSuccess = function (task) {
+        //     this.credits = task.loadedMeshes[0];
+        //     task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
+        // };
+        // meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "speaker_bent.obj");
+        // meshTask.onSuccess = function (task) {
+        //     this.intro = task.loadedMeshes[0];
+        //     task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
+        // };
         assetsManager.load();
 
 
@@ -157,19 +166,17 @@ class Game {
         this.ambientLight = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(1, 1, 0), scene);
         this.ambientLight.intensity = 0.22; // Very dim hemispheric light for the case that all spotlights are off
 
-        this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 8), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 4, 80, scene);
-        this.leftSpotlight = new BABYLON.SpotLight("leftSpotlight", new BABYLON.Vector3(4.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 4, 60, scene);
-        this.rightSpotlight = new BABYLON.SpotLight("rightSpotlight", new BABYLON.Vector3(-4.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 4, 60, scene);
-        this.leftSpotlight.diffuse = new BABYLON.Color3(1, 1, 1);
-        this.leftSpotlight.specular = new BABYLON.Color3(1, 1, 0);
+        this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 7), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
+        this.leftSpotlight = new BABYLON.SpotLight("leftSpotlight", new BABYLON.Vector3(3.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
+        this.rightSpotlight = new BABYLON.SpotLight("rightSpotlight", new BABYLON.Vector3(-3.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
         this.leftSpotlight.intensity = 0.8;
         this.rightSpotlight.intensity = 0.8;
         this.drumSpotlight.intensity = 0.8;
 
-        this.flash1 = new BABYLON.SpotLight("flash1", new BABYLON.Vector3(-5.5, 15, 21), new BABYLON.Vector3(0, -0.4, -0.9), Math.PI / 4, 100, scene);
-        this.flash2 = new BABYLON.SpotLight("flash2", new BABYLON.Vector3(-2, 15, 21), new BABYLON.Vector3(0, -0.4, -0.8), Math.PI / 4, 100, scene);
-        this.flash3 = new BABYLON.SpotLight("flash3", new BABYLON.Vector3(2, 15, 21), new BABYLON.Vector3(0, -0.4, -0.8), Math.PI / 4, 100, scene);
-        this.flash4 = new BABYLON.SpotLight("flash4", new BABYLON.Vector3(5.5, 15, 21), new BABYLON.Vector3(0, -0.4, -0.9), Math.PI / 4, 100, scene);
+        this.flash1 = new BABYLON.SpotLight("flash1", new BABYLON.Vector3(-5.5, 15, 21), new BABYLON.Vector3(0, -0.4, -0.9), Math.PI / 10, 100, scene);
+        this.flash2 = new BABYLON.SpotLight("flash2", new BABYLON.Vector3(-2, 15, 21), new BABYLON.Vector3(0, -0.4, -0.8), Math.PI / 10, 100, scene);
+        this.flash3 = new BABYLON.SpotLight("flash3", new BABYLON.Vector3(2, 15, 21), new BABYLON.Vector3(0, -0.4, -0.8), Math.PI / 10, 100, scene);
+        this.flash4 = new BABYLON.SpotLight("flash4", new BABYLON.Vector3(5.5, 15, 21), new BABYLON.Vector3(0, -0.4, -0.9), Math.PI / 10, 100, scene);
         // this.flash1.intensity = 0;
         // this.flash2.intensity = 0;
         // this.flash3.intensity = 0;
@@ -190,7 +197,7 @@ class Game {
         // Actors
         this.leftActor = BABYLON.MeshBuilder.CreateBox("leftActor", {height: 2, width: 2, depth: 0.01}, scene);
         this.leftActor.position.y = 2;
-        this.leftActor.position.x = 4.5;
+        this.leftActor.position.x = 3.5;
         this.leftActor.position.z = 4;
         var leftActorMaterial = new BABYLON.StandardMaterial("mat", scene);
         var leftActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy_256.mp4"], scene, true, true);
@@ -198,7 +205,7 @@ class Game {
         this.leftActor.material = leftActorMaterial;
         this.rightActor = BABYLON.MeshBuilder.CreateBox("rightActor", {height: 2, width: 2, depth: 0.01}, scene);
         this.rightActor.position.y = 2;
-        this.rightActor.position.x = -4.5;
+        this.rightActor.position.x = -3.5;
         this.rightActor.position.z = 4;
         var rightActorMaterial = new BABYLON.StandardMaterial("mat", scene);
         var rightActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_girl_256.mp4"], scene, true, true);
@@ -276,8 +283,8 @@ class Game {
     startFirework() {
         if (this.leftFirework == null && this.rightFirework == null) {
             let fireworkHelper = new FireworkHelper();
-            this.leftFirework = fireworkHelper.createParticles(this.scene, {x: 7.5, y: 0, z: 4}, false, 3);
-            this.rightFirework = fireworkHelper.createParticles(this.scene, {x: -7.5, y: 0, z: 4}, false, 3);
+            this.leftFirework = fireworkHelper.createParticles(this.scene, {x: 7, y: 0, z: 5}, false, 2);
+            this.rightFirework = fireworkHelper.createParticles(this.scene, {x: -7, y: 0, z: 5}, false, 2);
         } else {
             this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
             this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
@@ -294,6 +301,7 @@ class Game {
     }
 
     startLightSwitching() {
+        if(this.flashlightInterval) clearInterval(this.flashlightInterval);
         // Interval
         this.flashlightInterval = setInterval(() => {this.toggleGreenRed();}, 500);
     }
