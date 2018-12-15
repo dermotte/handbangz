@@ -17,32 +17,62 @@ function handlKeyPress(event) {
 
     if (document.querySelector("#userInfo")) document.querySelector("#userInfo").remove();
 
-    if (currentScene) currentScene.dispose();
+    handleSceneKeys(event);
+    handleActionKeys(event);
+}
+
+function handleSceneKeys (event) {
+    let newScene = null;
 
     switch(event.key)
     {
         case "1":
-            currentScene = intro;
+            newScene = intro;
             break;
         case "2":
-            currentScene = instructions;
+            newScene = instructions;
             break;
         case "3":
-            currentScene = menu;
+            newScene = menu;
             break;
         case "4":
-            currentScene = game;
+            newScene = game;
             break;
         case "5":
-            currentScene = end;
+            newScene = end;
             break;
         default:
             break;
     }
 
-    if (currentScene) {
+    if (newScene != null) {
+        if (currentScene) {
+            currentScene.dispose();
+        }
+        currentScene = newScene;
+    }
+    if (newScene != null && currentScene) {
         currentScene.createScene();
         currentScene.onLoad();
+    }
+}
+
+function handleActionKeys (event) {
+    if (game != null && game.isReady()) {
+
+        switch(event.key)
+        {
+            case "a":
+                game.startFirework();
+                break;
+            case "s":
+                console.log("StopFirework");
+                game.stopFirework();
+                break;
+            default:
+                break;
+        }
+
     }
 }
 
