@@ -7,7 +7,7 @@ class SoundMachine {
             silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
         };
 
-        this.currentSong = null;
+        this.countIn = null;
     }
 
     // type = "slow", "fast", "silent"
@@ -28,12 +28,30 @@ class SoundMachine {
         return Math.floor(Math.random() * max_value);
     }
 
+
+    playCountIn(number, scene, onComplete) {
+        if (number == 0) {
+            onComplete();
+            return;
+        };
+        number--;
+        this.countIn.onended = () => {
+            this.playCountIn(number, scene, onComplete);
+        };
+        this.countIn.play();
+
+    }
+    startCountIn(number, scene, onComplete) {
+        this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", scene, () => {this.playCountIn(number, scene, onComplete);}, {autoplay: false, loop: false});
+    }
+
+
     songChain(curSong, scene) {
         if (!scene) return;
 
         console.log("Song: ");
         console.log(curSong);
-        
+
         let nextSong = new BABYLON.Sound("current", this.getRandomPart(), scene, null, {autoplay: false, loop: false});
         curSong.onended = () => {
             this.songChain(nextSong, scene);
@@ -47,9 +65,7 @@ class SoundMachine {
 
     startLoop(scene) {
         // console.log(scene);
-        let curSong = new BABYLON.Sound("current", this.getRandomPart(), scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
-
-        // this.songChain(curSong, scene);
+        // let curSong = new BABYLON.Sound("current", this.getRandomPart(), scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
     }
 
 }

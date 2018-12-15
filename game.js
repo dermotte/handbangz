@@ -342,7 +342,14 @@ class Game {
 
     onLoad() {
         self.score = 0;
-        this.soundMachine.startLoop(this.scene);
+        // preload first song
+        let curSong = new BABYLON.Sound("current", this.soundMachine.getRandomPart(), this.scene, null, {autoplay: false, loop: false});
+        this.soundMachine.startCountIn(2,this.scene,
+            () => {
+                this.soundMachine.songChain(curSong, this.scene);
+            }
+        );
+
     }
 
     isReady() {
