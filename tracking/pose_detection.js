@@ -6,8 +6,8 @@ var minPoseConfidence = 0.1;
 var minPartConfidence = 0.5;
 var nmsRadius = 20.0;
 
-const videoWidth = 600;
-const videoHeight = 500;
+const videoWidth = 640;
+const videoHeight = 360;
 
 var playerOne = new Person("Player 1");
 var playerTwo = new Person("Player 2");
@@ -20,7 +20,7 @@ async function bindCamera() {
     video.height = videoHeight;
 
     // Get a permission from user to use a camera.
-    const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
+    const stream = await navigator.mediaDevices.getUserMedia({video: {  width: 640, height: 360, frameRate: { ideal: 30, max: 30 } }, audio: false});
     video.srcObject = stream;
 
     return new Promise(resolve => {
@@ -68,6 +68,10 @@ async function loadPoseNet() {
     detectPoses(video, net);
 }
 
+/**
+ * Detects posssible poses in a video stream
+ */
+
 function detectPoses(video, net) {
     console.log("Detect poses ...")
     const canvas = document.getElementById('output');
@@ -92,15 +96,10 @@ function detectPoses(video, net) {
         ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
         ctx.restore();
 
-        //let text = document.getElementById('text');
-
         let counter = 0;
         poses.forEach(({score, keypoints}) => {
-
-            //text.innerHTML += "Person " + counter + ":"
-
             let player = null;
-            if (counter == 0) {
+            if (counter === 0) {
                 player = playerOne;
                 if (score >= minPoseConfidence) {
                     drawKeypoints(keypoints, minPartConfidence, ctx);
@@ -128,8 +127,6 @@ function recognizePose(keypoints, minConfidence, player){
     let type = document.getElementById('type');
     let x = document.getElementById('x');
     let y = document.getElementById('y');
-
-    //let text_leftEye = document.getElementById('text_leftEye');
 
     for (let i = 0; i < keypoints.length; i++) {
         const keypoint = keypoints[i];
@@ -169,21 +166,16 @@ function recognizePose(keypoints, minConfidence, player){
                 if (correct_movement && player.state == "DOWN") {
                     player.state = "UP";
                     type.innerHTML = "UP"
-                    //console.log("UP");
+                    console.log("UP");
                     window.dispatchEvent(event_headup)
                 }else if (correct_movement && player.state == "UP"){
                     player.state = "DOWN";
                     type.innerHTML = "DOWN"
-                    //console.log("DOWN");
+                    console.log("DOWN");
                     window.dispatchEvent(event_headdown)
                 }
             }
-            //text_nose.innerHTML = "Nose: " + keypoint.position.x + ", " + keypoint.position.y
         }
-        //
-        // if(keypoint.part === "leftEye") {
-        //     //text_leftEye.innerHTML = "Left Eye: " + keypoint.position.x + ", " + keypoint.position.y
-        // }
     }
 }
 
