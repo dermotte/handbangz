@@ -65,11 +65,15 @@ function handlKeyPress(event) {
         default:
             break;
     }
+    currentScene.onLoad();
 }
 
 
 engine.runRenderLoop(function () {
-    if (currentScene) currentScene.render();
+
+    if (currentScene && currentScene.isReady()) {
+        currentScene.render();
+    }
 });
 
 

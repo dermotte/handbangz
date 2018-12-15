@@ -23,6 +23,13 @@ class Menu {
         this.scene =  scene;
     }
 
+    onLoad() {
+    }
+
+    isReady() {
+        return (this.scene && this.scene.isReady());
+    }
+
     render() {
         this.scene.render();
     }

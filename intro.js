@@ -46,9 +46,13 @@ class Intro {
 
 
         this.scene =  scene;
-        console.log("created");
+    }
 
+    isReady() {
+        return (this.scene && this.scene.isReady());
+    }
 
+    onLoad() {
     }
 
     render() {

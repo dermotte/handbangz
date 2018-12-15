@@ -20,11 +20,22 @@ class TheEnd {
         // Add and manipulate meshes in the scene
         var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
 
-        this.scene =  scene;
+        this.scene = scene;
+    }
+
+    onLoad() {
+    }
+
+    isReady() {
+        return (this.scene && this.scene.isReady());
     }
 
     render() {
         this.scene.render();
+    }
+
+    dispose() {
+        this.scene.dispose();
     }
 
 }
