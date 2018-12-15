@@ -110,30 +110,61 @@ class Game {
 
         let monitordimension = {height: 1, width: 2, depth: 1};
 
-        this.centerMonitor = BABYLON.MeshBuilder.CreateBox("centermonitor", monitordimension, scene);
-        this.centerMonitor.position.y = 1.5;
-        this.centerMonitor.position.x = 0;
-        this.centerMonitor.position.z = 6;
-        this.centerMonitor.material = material;
+        // this.centerMonitor = BABYLON.MeshBuilder.CreateBox("centermonitor", monitordimension, scene);
+        // this.centerMonitor.position.y = 1.5;
+        // this.centerMonitor.position.x = 0;
+        // this.centerMonitor.position.z = 6;
+        // this.centerMonitor.material = material;
 
-        this.leftMonitor = BABYLON.MeshBuilder.CreateBox("leftmonitor", monitordimension, scene);
-        this.leftMonitor.position.y = 1.5;
-        this.leftMonitor.position.x = 5;
-        this.leftMonitor.position.z = 6;
-        this.leftMonitor.material = material;
+        // this.leftMonitor = BABYLON.MeshBuilder.CreateBox("leftmonitor", monitordimension, scene);
+        // this.leftMonitor.position.y = 1.5;
+        // this.leftMonitor.position.x = 5;
+        // this.leftMonitor.position.z = 6;
+        // this.leftMonitor.material = material;
+        //
+        // this.rightMonitor = BABYLON.MeshBuilder.CreateBox("rightmonitor", monitordimension, scene);
+        // this.rightMonitor.position.y = 1.5;
+        // this.rightMonitor.position.x = -5;
+        // this.rightMonitor.position.z = 6;
+        // this.rightMonitor.material = material;
 
-        this.rightMonitor = BABYLON.MeshBuilder.CreateBox("rightmonitor", monitordimension, scene);
-        this.rightMonitor.position.y = 1.5;
-        this.rightMonitor.position.x = -5;
-        this.rightMonitor.position.z = 6;
-        this.rightMonitor.material = material;
+        // Meshes on the stage:
+        let assetsManager = new BABYLON.AssetsManager(scene);
+        let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "speaker_floor.obj");
+        meshTask.onSuccess = function (task) {
+
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-4, 1, 6);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(-4, 1, 6);
+            let bb1 = task.loadedMeshes[0].clone();
+            let bb2 = task.loadedMeshes[1].clone();
+
+            bb1.position = new BABYLON.Vector3(4, 1, 6);
+            bb2.position = new BABYLON.Vector3(4, 1, 6);
+
+            let bm1 = task.loadedMeshes[0].clone();
+            let bm2 = task.loadedMeshes[1].clone();
+
+            bm1.position = new BABYLON.Vector3(0, 1, 6);
+            bm2.position = new BABYLON.Vector3(0, 1, 6);
+        };
+        // meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "speaker_tower.obj");
+        // meshTask.onSuccess = function (task) {
+        //     this.credits = task.loadedMeshes[0];
+        //     task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
+        // };
+        // meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "speaker_bent.obj");
+        // meshTask.onSuccess = function (task) {
+        //     this.intro = task.loadedMeshes[0];
+        //     task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
+        // };
+        assetsManager.load();
 
 
         // Create lighting -------------------------------------------------------------------------------------------
 
         // Add lights to the scene
         this.ambientLight = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(1, 1, 0), scene);
-        this.ambientLight.intensity = 0.2; // Very dim hemispheric light for the case that all spotlights are off
+        this.ambientLight.intensity = 0.22; // Very dim hemispheric light for the case that all spotlights are off
 
         this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 7), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
         this.leftSpotlight = new BABYLON.SpotLight("leftSpotlight", new BABYLON.Vector3(3.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);

@@ -33,8 +33,8 @@ class Menu {
         // console.log(scene);
 
         // scene.meshes[2].position.y = -2
-        var assetsManager = new BABYLON.AssetsManager(scene);
-        var meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "Play.obj");
+        let assetsManager = new BABYLON.AssetsManager(scene);
+        let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "Play.obj");
         meshTask.onSuccess = function (task) {
             this.play = task.loadedMeshes[0];
             task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 1, 2);
