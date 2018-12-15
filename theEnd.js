@@ -1,7 +1,6 @@
 class TheEnd {
     constructor() {
         this.scene;
-        this.createScene(); // create the scene function
     }
 
     createScene () {

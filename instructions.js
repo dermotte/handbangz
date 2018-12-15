@@ -5,7 +5,6 @@ class Instructions {
         this.scene;
         this.video;
         this.particlePath = "assets/images/textures/flare.png";
-        this.createScene(); // create the scene function
     }
 
     createScene() {

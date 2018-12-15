@@ -4,7 +4,6 @@ class Intro {
     constructor() {
         this.scene;
         this.video;
-        this.createScene(); // create the scene function
     }
 
     createScene() {

@@ -22,7 +22,6 @@ class Game {
         this.scene;
         this.actionMap = new ActionMap(this);
         this.gamepad = new Gamepad(this);
-        this.createScene();
     }
 
     createScene () {
