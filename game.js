@@ -44,6 +44,10 @@ class Game {
         this.scene;
         this.actionMap = new ActionMap(this);
         this.gamepad = new Gamepad(this);
+
+        // Stats of the current game
+        this.score = 0;
+        this.lastHeadUp = null;
     }
 
     createScene () {
@@ -126,7 +130,7 @@ class Game {
         this.ambientLight = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(1, 1, 0), scene);
         this.ambientLight.intensity = 0.2; // Very dim hemispheric light for the case that all spotlights are off
 
-        this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 7), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
+        this.drumSpotlight = new BABYLON.SpotLight("drumSpotlight", new BABYLON.Vector3(0, 10, 7), new BABYLON.Vector3(0, -1, -1), Math.PI / 5, 2, scene);
         this.leftSpotlight = new BABYLON.SpotLight("leftSpotlight", new BABYLON.Vector3(3.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
         this.rightSpotlight = new BABYLON.SpotLight("rightSpotlight", new BABYLON.Vector3(-3.5, 10, 10), new BABYLON.Vector3(0, -1, -0.7), Math.PI / 10, 2, scene);
         this.leftSpotlight.intensity = 0.8;
@@ -180,10 +184,10 @@ class Game {
 
         // Player video wall
         // Actors
-        this.videoWall = BABYLON.MeshBuilder.CreateBox("videoWall", {height: 3, width: 3, depth: 0.01}, scene);
-        this.videoWall.position.y = 0;
+        this.videoWall = BABYLON.MeshBuilder.CreateBox("videoWall", {height: 4, width: 6, depth: 0.01}, scene);
+        this.videoWall.position.y = 5;
         this.videoWall.position.x = 0;
-        this.videoWall.position.z = 1;
+        this.videoWall.position.z = 0.1;
         var videoWallMaterial = new BABYLON.StandardMaterial("mat", scene);
         var videoWallTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
         videoWallMaterial.diffuseTexture = videoWallTexture;
@@ -288,7 +292,16 @@ class Game {
         this.flash2.intensity = 0;
     }
 
+    headUpTriggered() {
+        let time = new Date().getMilliseconds();
+        if (this.lastHeadUp == null || Math.abs(this.lastHeadUp - time) < 50) {
+            this.score += 1;
+        }
+        this.lastHeadUp = time;
+    }
+
     onLoad() {
+        self.score = 0;
     }
 
     isReady() {
