@@ -5,7 +5,7 @@ class FireworkHelper {
         this.particlePath = "assets/images/textures/flare.png";
     }
 
-    createParticles(scene, position, animated) {
+    createParticles(scene, position, animated, angleDirection = 7) {
 
         // Fountain object
         var fountain = BABYLON.MeshBuilder.CreateBox("foutain", {height: 1, width: 1}, scene);
@@ -13,7 +13,7 @@ class FireworkHelper {
         fountain.position.x = position.x;
         fountain.position.y = position.y;
 
-        this.addFireToFountain(scene, fountain);
+        this.addFireToFountain(scene, fountain, angleDirection);
         this.addSmokeToFountain(scene, fountain);
 
         // Ground
@@ -55,6 +55,8 @@ class FireworkHelper {
             fountain.animations.push(animation);
             scene.beginAnimation(fountain, 0, 100, true);
         }
+
+        return fountain;
     }
 
 
@@ -96,7 +98,7 @@ class FireworkHelper {
         smokeSystem.start();
     }
 
-    addFireToFountain(scene, fountain) {
+    addFireToFountain(scene, fountain, angleDirection) {
 
         // Create a particle system
         var fireSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
@@ -132,8 +134,8 @@ class FireworkHelper {
         fireSystem.gravity = new BABYLON.Vector3(0, 0, 0);
 
         // Direction of each particle after it has been emitted
-        fireSystem.direction1 = new BABYLON.Vector3(7, 8, -3);
-        fireSystem.direction2 = new BABYLON.Vector3(-7, 8, 3);
+        fireSystem.direction1 = new BABYLON.Vector3(angleDirection, 8, -3);
+        fireSystem.direction2 = new BABYLON.Vector3(-angleDirection, 8, 3);
         // fireSystem.direction1 = new BABYLON.Vector3(0, 4, 0);
         // fireSystem.direction2 = new BABYLON.Vector3(0, 7, 0);
 
