@@ -225,13 +225,15 @@ class PoseDetector {
                 let x_2 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 3][0]);
                 let x_3 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 4][0]);
                 let x_4 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 5][0]);
-
-                if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
-                    console.log("lighted left");
-                } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
-                    console.log("lighted right");
-                } else {
+                
+                if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
+                    if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
+                        console.log("lighted left");
+                    } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
+                        console.log("lighted right");
+                    } else {
 //                        console.log("WTFog");
+                    }
                 }
             }
         }
