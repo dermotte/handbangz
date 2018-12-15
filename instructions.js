@@ -42,7 +42,7 @@ class Instructions {
 
         // Video material
         var videoMat = new BABYLON.StandardMaterial("textVid", scene);
-        videoMat.diffuseTexture = new BABYLON.VideoTexture("video", ["assets/videos/All the Moves of HeadBangZ.mp4"], scene, false);
+        videoMat.diffuseTexture = new BABYLON.VideoTexture("video", ["assets/videos/All the Moves of HeadBangZ_720p.mp4"], scene, false);
         videoMat.backFaceCulling = false;
 
         //Applying materials

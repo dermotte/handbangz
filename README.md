@@ -64,3 +64,14 @@ Extra encouraging sounds to be played in the game
 
 ### Logo
 In the typical Hard Rock style of the 90s HeadBangZ ( -> John)
+
+## Credits
+
+Tanja Heideman - Master of Puppets
+John NA Brown - Chrome & Blades
+Philipp Moll - Stage Diver
+Sabrina Kletz - 
+Andi Leibetseder - 
+Bernd Münzer - 
+Mathias Lux - 
+Armin Lippitz - Hard Rock Consulting Inc.
