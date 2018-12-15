@@ -29,6 +29,10 @@ class Game {
         this.leftFirework;
         this.rightFirework;
 
+        // Actors
+        this.leftActor;
+        this.rightActor;
+
         this.scene;
         this.actionMap = new ActionMap(this);
         this.gamepad = new Gamepad(this);
@@ -141,6 +145,24 @@ class Game {
 
         this.flash2.diffuse = new BABYLON.Color3(0.22,0.73,0.1);
         this.flash2.specular = new BABYLON.Color3(0.64,0.73,0.1);
+
+        // Actors
+        this.leftActor = BABYLON.MeshBuilder.CreateBox("leftActor", {height: 2, width: 2, depth: 0.01}, scene);
+        this.leftActor.position.y = 2;
+        this.leftActor.position.x = 3.5;
+        this.leftActor.position.z = 4;
+        var leftActorMaterial = new BABYLON.StandardMaterial("mat", scene);
+        var leftActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
+        leftActorMaterial.diffuseTexture = leftActorTexture;
+        this.leftActor.material = leftActorMaterial;
+        this.rightActor = BABYLON.MeshBuilder.CreateBox("rightActor", {height: 2, width: 2, depth: 0.01}, scene);
+        this.rightActor.position.y = 2;
+        this.rightActor.position.x = -3.5;
+        this.rightActor.position.z = 4;
+        var rightActorMaterial = new BABYLON.StandardMaterial("mat", scene);
+        var rightActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_girl.mp4"], scene, true, true);
+        rightActorMaterial.diffuseTexture = rightActorTexture;
+        this.rightActor.material = rightActorMaterial;
 
         this.createFirework();
 
