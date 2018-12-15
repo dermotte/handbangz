@@ -34,6 +34,13 @@ class Game {
         this.leftActor;
         this.rightActor;
 
+        // hud for score and such things
+        this.hud;
+        this.playerOneScoreLabel;
+        this.playerTwoScoreLabel;
+
+        this.videoWall;
+
         this.scene;
         this.actionMap = new ActionMap(this);
         this.gamepad = new Gamepad(this);
@@ -169,7 +176,61 @@ class Game {
         this.switchOffGreen();
         this.switchOffRed();
 
+        this.addHUD();
+
+        // Player video wall
+        // Actors
+        this.videoWall = BABYLON.MeshBuilder.CreateBox("videoWall", {height: 3, width: 3, depth: 0.01}, scene);
+        this.videoWall.position.y = 0;
+        this.videoWall.position.x = 0;
+        this.videoWall.position.z = 1;
+        var videoWallMaterial = new BABYLON.StandardMaterial("mat", scene);
+        var videoWallTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
+        videoWallMaterial.diffuseTexture = videoWallTexture;
+        this.videoWall.material = videoWallMaterial;
+
         this.scene =  scene;
+    }
+
+    addHUD() {
+        // GUI
+        this.hud= BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        var playerTwoScore = new BABYLON.GUI.TextBlock("playerTwoScore");
+        playerTwoScore.text = "";
+        playerTwoScore.fontSize = 50;
+        playerTwoScore.color = '#A5400C';
+        playerTwoScore.fontFamily =  'New Rocker';
+        playerTwoScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
+        playerTwoScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
+        playerTwoScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        playerTwoScore.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        playerTwoScore.paddingRight = "50px";
+        playerTwoScore.paddingTop = "50px";
+        this.playerTwoScoreLabel = playerTwoScore;
+        this.hud.addControl(playerTwoScore);
+
+        var playerOneScore = new BABYLON.GUI.TextBlock("playerOneScore");
+        playerOneScore.text = "";
+        playerOneScore.fontSize = 50;
+        playerOneScore.color = '#A5400C';
+        playerOneScore.fontFamily =  'New Rocker';
+        playerOneScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
+        playerOneScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+        playerOneScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        playerOneScore.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        playerOneScore.paddingLeft = "50px";
+        playerOneScore.paddingTop = "50px";
+        this.playerOneScoreLabel = playerOneScore;
+        this.hud.addControl(playerOneScore);
+    }
+
+    setPlayerOneScore(score) {
+        this.playerOneScoreLabel.text = "Player 1: " + score;
+    }
+
+    setPlayerTwoScore(score) {
+        this.playerTwoScoreLabel.text = score + " : Player 2";
     }
 
     startFirework() {

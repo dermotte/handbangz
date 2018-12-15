@@ -73,6 +73,8 @@ function handleActionKeys (event) {
                 break;
             case "f":
                 game.startLightSwitching();
+                game.setPlayerOneScore(100);
+                game.setPlayerTwoScore(150);
                 break;
             default:
                 break;
