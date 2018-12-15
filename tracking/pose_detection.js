@@ -1,15 +1,16 @@
 var imageScaleFactor = 0.5;
-var flipHorizontal = true;
+var flipHorizontal = false;
 var outputStride = 16;
 var maxPoseDetections = 2;
 var minPoseConfidence = 0.1;
 var minPartConfidence = 0.5;
 var nmsRadius = 20.0;
 
-var imageElement = document.getElementById('cat');
-
 const videoWidth = 600;
 const videoHeight = 500;
+
+var playerOne = new Person("Player 1");
+var playerTwo = new Person("Player 2");
 
 async function bindCamera() {
     console.log("Bind camera ...")
@@ -30,9 +31,22 @@ async function bindCamera() {
 }
 
 async function loadVideo() {
-    console.log("Load video ...")
-    const video = await bindCamera();
-    video.play();
+    // console.log("Load video ...")
+    // const video = await bindCamera();
+    // video.play();
+
+    let video = document.getElementById('videostream');
+    video.width = videoWidth;
+    video.height = videoHeight;
+    let source = video.getElementsByTagName('source');
+
+    if(source.length === 0){
+        console.log("Load video from camera")
+        video = await bindCamera();
+        video.play();
+    }else{
+        console.log("Load video from source")
+    }
 
     return video;
 }
@@ -72,19 +86,33 @@ function detectPoses(video, net) {
         ctx.clearRect(0, 0, videoWidth, videoHeight);
 
         ctx.save();
-        ctx.scale(-1, 1);
-        ctx.translate(-videoWidth, 0);
+        //Enable this, when input is streamed from camera
+        //ctx.scale(-1, 1);
+        //ctx.translate(-videoWidth, 0);
         ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
         ctx.restore();
 
+        //let text = document.getElementById('text');
+
+        let counter = 0;
         poses.forEach(({score, keypoints}) => {
-            if (score >= minPoseConfidence) {
-                drawKeypoints(keypoints, minPartConfidence, ctx);
-                drawSkeleton(keypoints, minPartConfidence, ctx);
+
+            //text.innerHTML += "Person " + counter + ":"
+
+            let player = null;
+            if (counter == 0) {
+                player = playerOne;
+                if (score >= minPoseConfidence) {
+                    drawKeypoints(keypoints, minPartConfidence, ctx);
+                    drawSkeleton(keypoints, minPartConfidence, ctx);
+                    recognizePose(keypoints, minPartConfidence, player)
+                }
+
+            } else {
+                player = playerTwo;
             }
+            counter = counter + 1;
         });
-
-
 
         requestAnimationFrame(poseDetection);
     }
@@ -92,13 +120,75 @@ function detectPoses(video, net) {
     poseDetection();
 
 }
+
+function recognizePose(keypoints, minConfidence, player){
+    let type = document.getElementById('type');
+    let x = document.getElementById('x');
+    let y = document.getElementById('y');
+
+    //let text_leftEye = document.getElementById('text_leftEye');
+
+    for (let i = 0; i < keypoints.length; i++) {
+        const keypoint = keypoints[i];
+
+        if (keypoint.score < minConfidence) {
+            continue;
+        }
+
+        if(keypoint.part === "nose") {
+            player.nosePositions.push([keypoint.position.x, keypoint.position.y]);
+
+            x.innerHTML = keypoint.position.x.toFixed(4);
+            y.innerHTML = keypoint.position.y.toFixed(4);
+
+            if (player.nosePositions.length > 3) {
+
+                let correct_movement = true;
+                for(let iPos = player.nosePositions.length-3; iPos < player.nosePositions.length; iPos++){
+                    let x_cur = Math.round(player.nosePositions[iPos][0] / 10) * 10;
+                    let y_cur = Math.round(player.nosePositions[iPos][1] / 10) * 10;
+
+                    let x_prev = Math.round(player.nosePositions[iPos-1][0] / 10) * 10;
+                    let y_prev = Math.round(player.nosePositions[iPos-1][1] / 10) * 10;
+
+                    if (player.state == "DOWN") {
+                        if (y_cur >= y_prev) {
+                            correct_movement = false;
+                        }
+
+                    }else if(player.state == "UP"){
+                        if (y_cur <= y_prev) {
+                            correct_movement = false;
+                        }
+                    }
+
+                }
+                if (correct_movement && player.state == "DOWN") {
+                    player.state = "UP";
+                    type.innerHTML = "UP"
+                    console.log("UP");
+                }else if (correct_movement && player.state == "UP"){
+                    player.state = "DOWN";
+                    type.innerHTML = "DOWN"
+                    console.log("DOWN");
+                }
+            }
+            //text_nose.innerHTML = "Nose: " + keypoint.position.x + ", " + keypoint.position.y
+        }
+        //
+        // if(keypoint.part === "leftEye") {
+        //     //text_leftEye.innerHTML = "Left Eye: " + keypoint.position.x + ", " + keypoint.position.y
+        // }
+    }
+}
+
 const color = 'aqua';
 const lineWidth = 2;
 /**
  * Draw pose keypoints onto a canvas
  */
 function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
-    console.log("Draw keypoints ...")
+    //console.log("Draw keypoints ...")
     for (let i = 0; i < keypoints.length; i++) {
         const keypoint = keypoints[i];
 

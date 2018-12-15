@@ -4,20 +4,69 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3"></script>
     <!-- Load Posenet -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@0.2.3"></script>
+
+    <style>
+        body {
+            background-color: slategray;
+        }
+
+        #input{
+            padding: 5px;
+            background-color: black;
+            height: 600px;
+        }
+
+        #videostream{
+            float: left;
+        }
+
+        #text{
+            float: left;
+            color: white;
+        }
+
+        #text div{
+            width: 100px;
+            float: left;
+        }
+
+    </style>
+
 </head>
 
 <body onload="main()">
 
-<video id="videostream"></video>
-<canvas id="output"></canvas>
+<div id="stage">
 
+    <div id="input">
+        <!--Input: video source-->
+        <video id="videostream" autoplay controls width="600" height="500">
+            <source src="../assets/videos/single.mp4">
+        </video>
+
+        <!--Input: camera stream-->
+        <!--<video id="videostream"></video>-->
+        <div id="text">
+            <div id="type">Type</div>
+            <div id="x">X</div>
+            <div id="y">Y</div>
+        </div>
+
+
+    </div>
+
+    <canvas id="output"></canvas>
+</div>
+
+<script src="player.js"></script>
 <script src="pose_detection.js"></script>
+
 </body>
 
 <script>
 
     function main() {
-        console.log("Main ...")
+        console.log("Main ...");
         loadPoseNet();
     };
 
