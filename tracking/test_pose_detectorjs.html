@@ -4,6 +4,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3"></script>
     <!-- Load Posenet -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@0.2.3"></script>
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" crossorigin="anonymous">
+
+
 
     <style>
         body {
@@ -18,6 +22,7 @@
 
         #videostream{
             float: left;
+            display: none;
         }
 
         #text{
@@ -29,8 +34,27 @@
             width: 100px;
             float: left;
         }
+        
+        i {
+            font-size: 30;
+        }
 
     </style>
+    
+    <script>
+
+        function main() {
+            console.log("Main ...");
+            //loadPoseNet();
+            let videoElement = document.getElementById('videostream');
+            let audioElement = document.getElementById('audio');
+            poseDetector = new PoseDetector(250, videoElement, 640, 360, audioElement, true);
+            poseDetector.loadPoseNet();
+
+        }
+
+
+    </script>
 
 </head>
 
@@ -50,11 +74,21 @@
             <div id="type">Type</div>
             <div id="x">X</div>
             <div id="y">Y</div>
+            
+            <i class="fas fa-arrow-down" id="arrow"></i>
+            
         </div>
+        
+        
+        
+        <canvas id="output"></canvas>
 
+        <audio id="audio">
+            <source src="../assets/music/test.mp3"/>            
+        </audio>
     </div>
 
-    <canvas id="output"></canvas>
+    
 </div>
 
 <script src="player.js"></script>
@@ -62,17 +96,4 @@
 
 </body>
 
-<script>
-
-    function main() {
-        console.log("Main ...");
-        //loadPoseNet();
-        let videoElement = document.getElementById('videostream')
-        poseDetector = new PoseDetector(250, videoElement, 640, 360);
-        poseDetector.loadPoseNet();
-
-    };
-
-
-</script>
 </html>

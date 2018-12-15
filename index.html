@@ -29,16 +29,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.3"></script>
     <!-- Load Posenet -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet@0.2.3"></script>
-    <link href="https://fonts.googleapis.com/css?family=New+Rocker" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=New+Rocker" rel="stylesheet"/>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
 
-    <script src="actionMap.js" defer></script>
     <script src="firework-helper.js" defer></script>
     <script src="gamepad.js" defer></script>
+    <script src="tracking/player.js"></script>
+    <script src="tracking/pose_detector.js" defer></script>
     <script src="intro.js" defer></script>
     <script src="instructions.js" defer></script>
     <script src="game.js" defer></script>
@@ -46,12 +47,11 @@
     <script src="theEnd.js" defer></script>
     <script src="SoundMachine.js" defer></script>
     <script src="main.js" defer></script>
-    <script src="tracking/player.js"></script>
-    <script src="tracking/pose_detection.js" defer></script>
+    
 
 </head>
 
-<body onkeyup="handlKeyPress(event)" onload="loadPoseNet()">
+<body onkeyup="handlKeyPress(event)">
     <!-- <div id="userInfo" style="position:absolute;">
         All Scenes (Press Keys): <br>
         1: Introduction <br>
@@ -78,8 +78,6 @@
 
         <canvas id="output"></canvas>
     </div>
-
-
 
 
 </body>
