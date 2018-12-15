@@ -98,13 +98,13 @@ class Game {
         let speakerdimension = {height: 2, width: 3, depth: 1};
         this.speakerRight = BABYLON.MeshBuilder.CreateBox("speakerRight", speakerdimension, scene);
         this.speakerRight.position.y = 2;
-        this.speakerRight.position.x = -5;
+        this.speakerRight.position.x = -7;
         this.speakerRight.position.z = 1.2;
         this.speakerRight.material = material;
 
         this.speakerLeft = BABYLON.MeshBuilder.CreateBox("speakerLeft", speakerdimension, scene);
         this.speakerLeft.position.y = 2;
-        this.speakerLeft.position.x = 5;
+        this.speakerLeft.position.x = 7;
         this.speakerLeft.position.z = 1.2;
         this.speakerLeft.material = material;
 
@@ -136,17 +136,39 @@ class Game {
         meshTask.onSuccess = function (task) {
             task.loadedMeshes[0].position = new BABYLON.Vector3(-8, 1, 6);
             task.loadedMeshes[1].position = new BABYLON.Vector3(-8, 1, 6);
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
 
             let bb1 = task.loadedMeshes[0].clone();
             let bb2 = task.loadedMeshes[1].clone();
 
             bb1.position = new BABYLON.Vector3(8, 1, 6);
             bb2.position = new BABYLON.Vector3(8, 1, 6);
+            bb1.material.maxSimultaneousLights = 8;
+            bb2.material.maxSimultaneousLights = 8;
         };
         meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "helmet_horns.obj");
         meshTask.onSuccess = function (task) {
             task.loadedMeshes[0].position = new BABYLON.Vector3(0, 1.5, 2);
             task.loadedMeshes[1].position = new BABYLON.Vector3(0, 1.5, 2);
+        };
+        meshTask = assetsManager.addMeshTask("task04", "", "assets/models/", "speaker_bent.obj");
+        meshTask.onSuccess = function (task) {
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-7, 4, 1);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(-7, 4, 1);
+
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
+
+            let bb1 = task.loadedMeshes[0].clone();
+            let bb2 = task.loadedMeshes[1].clone();
+
+            bb1.position = new BABYLON.Vector3(7, 4, 1);
+            bb2.position = new BABYLON.Vector3(7, 4, 1);
+
+            bb1.material.maxSimultaneousLights = 8;
+            bb2.material.maxSimultaneousLights = 8;
+
         };
         assetsManager.load();
 
@@ -213,7 +235,7 @@ class Game {
 
         // Player video wall
         // Actors
-        this.videoWall = BABYLON.MeshBuilder.CreateBox("videoWall", {height: 4, width: 6, depth: 0.01}, scene);
+        this.videoWall = BABYLON.MeshBuilder.CreateBox("videoWall", {height: 6, width: 9, depth: 0.01}, scene);
         this.videoWall.position.y = 5;
         this.videoWall.position.x = 0;
         this.videoWall.position.z = 0.1;
