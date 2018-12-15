@@ -10,47 +10,67 @@ let menu = new Menu();
 let game = new Game();
 let end = new TheEnd();
 
+let currentScene = null;
+
+
+// var createGUI = function(scene, showScene) {
+//     switch (showScene) {
+//         case 0:
+//             advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene0);
+//         break
+//         case 1:
+//             advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene1);
+//         break
+//     }
+//     var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Scene " + ((clicks + 1) % 2));
+//     button.width = 0.2;
+//     button.height = "40px";
+//     button.color = "white";
+//     button.background = "green";
+//     button.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP
+//     advancedTexture.addControl(button);
+//
+//
+//     button.onPointerUpObservable.add(function () {
+//         clicks++;
+//     });
+// }
+//
+// createGUI(scene, showScene);
+
 
 function handlKeyPress(event) {
     console.log(event);
-    document.querySelector("#userInfo").innerHTML = "";
+
+    if (document.querySelector("#userInfo")) document.querySelector("#userInfo").remove();
+
     switch(event.key)
     {
 
         case "1":
-            // Register a render loop to repeatedly render the scene
-            engine.runRenderLoop(function () {
-                intro.render();
-            });
+            currentScene = intro;
             break;
         case "2":
-            // Register a render loop to repeatedly render the scene
-            engine.runRenderLoop(function () {
-                instructions.render();
-            });
+            currentScene = instructions;
             break;
         case "3":
-            // Register a render loop to repeatedly render the scene
-            engine.runRenderLoop(function () {
-                menu.render();
-            });
+            currentScene = menu;
             break;
         case "4":
-            // Register a render loop to repeatedly render the scene
-            engine.runRenderLoop(function () {
-                game.render();
-            });
+            currentScene = game;
             break;
         case "5":
-            // Register a render loop to repeatedly render the scene
-            engine.runRenderLoop(function () {
-                end.render();
-            });
+            currentScene = end;
             break;
         default:
             break;
     }
 }
+
+
+engine.runRenderLoop(function () {
+    if (currentScene) currentScene.render();
+});
 
 
 // Watch for browser/canvas resize events

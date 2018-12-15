@@ -46,6 +46,7 @@ class Intro {
 
 
         this.scene =  scene;
+        console.log("created");
 
 
     }
@@ -57,5 +58,9 @@ class Intro {
                 this.video.play();
             }
         );
+    }
+
+    dispose() {
+        this.scene.dispose();
     }
 }

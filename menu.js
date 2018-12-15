@@ -27,4 +27,8 @@ class Menu {
         this.scene.render();
     }
 
+    dispose() {
+        this.scene.dispose();
+    }
+
 }
