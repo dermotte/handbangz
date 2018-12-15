@@ -24,6 +24,7 @@ class Game {
         this.flash2;
         this.flash3;
         this.flash4;
+        this.flashlightInterval;
 
         // Fireworks
         this.leftFirework;
@@ -164,20 +165,66 @@ class Game {
         rightActorMaterial.diffuseTexture = rightActorTexture;
         this.rightActor.material = rightActorMaterial;
 
-        this.createFirework();
+        //this.createFirework();
+        this.switchOffGreen();
+        this.switchOffRed();
 
         this.scene =  scene;
     }
 
-    createFirework() {
-        let fireworkHelper = new FireworkHelper();
-        this.leftFirework = fireworkHelper.createParticles(this.scene, {x: 7, y: 0, z: 5}, false, 2);
-        this.rightFirework = fireworkHelper.createParticles(this.scene, {x: -7, y: 0, z: 5}, false, 2);
+    startFirework() {
+        if (this.leftFirework == null && this.rightFirework == null) {
+            let fireworkHelper = new FireworkHelper();
+            this.leftFirework = fireworkHelper.createParticles(this.scene, {x: 7, y: 0, z: 5}, false, 2);
+            this.rightFirework = fireworkHelper.createParticles(this.scene, {x: -7, y: 0, z: 5}, false, 2);
+        } else {
+            this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
+            this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
+            this.rightFirework.getEmittedParticleSystems()[0].emitRate = 350;
+            this.rightFirework.getEmittedParticleSystems()[1].emitRate = 350;
+        }
     }
 
-    destroyFirework() {
-        this.leftFirework.dispose();
-        this.rightFirework.dispose();
+    stopFirework() {
+        this.leftFirework.getEmittedParticleSystems()[0].emitRate = 0;
+        this.leftFirework.getEmittedParticleSystems()[1].emitRate = 0;
+        this.rightFirework.getEmittedParticleSystems()[0].emitRate = 0;
+        this.rightFirework.getEmittedParticleSystems()[1].emitRate = 0;
+    }
+
+    startLightSwitching() {
+        // Interval
+        this.flashlightInterval = setInterval(() => {this.toggleGreenRed();}, 500);
+    }
+
+    toggleGreenRed() {
+        if (this.flash3.intensity == 1) {
+            this.switchOffGreen();
+            this.switchOnRed();
+        } else {
+            this.switchOffRed();
+            this.switchOnGreen();
+        }
+    }
+
+    switchOnGreen() {
+        this.flash3.intensity = 1;
+        this.flash4.intensity = 1;
+    }
+
+    switchOffGreen() {
+        this.flash3.intensity = 0;
+        this.flash4.intensity = 0;
+    }
+
+    switchOnRed() {
+        this.flash1.intensity = 1;
+        this.flash2.intensity = 1;
+    }
+
+    switchOffRed() {
+        this.flash1.intensity = 0;
+        this.flash2.intensity = 0;
     }
 
     onLoad() {
@@ -192,6 +239,7 @@ class Game {
     }
 
     dispose() {
+        clearInterval(this.flashlightInterval);
         this.scene.dispose();
     }
 
