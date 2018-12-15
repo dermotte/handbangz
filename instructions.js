@@ -12,8 +12,8 @@ class Instructions {
         var scene = new BABYLON.Scene(engine);
 
         // Setup environment
-        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 10, 50), scene);
-        var light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 10, -20), scene);
+        var light = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(-10, -10, -10), scene);
+        //var light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(10, 10, -20), scene);
         var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2, 15, new BABYLON.Vector3(0,0,0), scene);
 
         camera.attachControl(canvas);
@@ -73,31 +73,31 @@ class Instructions {
 
 
         // Fountain's animation
-        // var keys = [];
-        // var animation = new BABYLON.Animation("animation", "rotation.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
-        //                                                                 BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-        // // At the animation key 0, the value of scaling is "1"
-        // keys.push({
-        //     frame: 0,
-        //     value: 0
-        // });
-        //
-        // // At the animation key 50, the value of scaling is "0.2"
-        // keys.push({
-        //     frame: 50,
-        //     value: Math.PI
-        // });
-        //
-        // // At the animation key 100, the value of scaling is "1"
-        // keys.push({
-        //     frame: 100,
-        //     value: 0
-        // });
-        //
-        // // Launch animation
-        // animation.setKeys(keys);
-        // fountain.animations.push(animation);
-        // scene.beginAnimation(fountain, 0, 100, true);
+        var keys = [];
+        var animation = new BABYLON.Animation("animation", "rotation.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                                                                        BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+        // At the animation key 0, the value of scaling is "1"
+        keys.push({
+            frame: 0,
+            value: 0
+        });
+
+        // At the animation key 50, the value of scaling is "0.2"
+        keys.push({
+            frame: 50,
+            value: Math.PI
+        });
+
+        // At the animation key 100, the value of scaling is "1"
+        keys.push({
+            frame: 100,
+            value: 0
+        });
+
+        // Launch animation
+        animation.setKeys(keys);
+        fountain.animations.push(animation);
+        scene.beginAnimation(fountain, 0, 100, true);
     }
 
 
