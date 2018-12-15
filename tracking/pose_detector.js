@@ -1,6 +1,6 @@
 class PoseDetector {
 
-    constructor(samplerate, videoElement, videoWidth, videoHeight, audioElement) {
+    constructor(samplerate, videoElement, videoWidth, videoHeight, audioElement, debug) {
         this.samplerate = samplerate;
         this.videoElement = videoElement;
         this.videoWidth = videoWidth;
@@ -24,6 +24,8 @@ class PoseDetector {
         this.color = 'aqua';
         this.colorLowConfidence = 'red';
         this.lineWidth = 2;
+
+        this.debug = debug;
 
     }
 
@@ -87,14 +89,15 @@ class PoseDetector {
                     video, 0.5, detector.flipHorizontal, detector.outputStride,
                     detector.maxPoseDetections, detector.minPartConfidence, detector.nmsRadius);
 
-            ctx.clearRect(0, 0, detector.videoWidth, detector.videoHeight);
+            if (detector.debug) {
+                ctx.clearRect(0, 0, detector.videoWidth, detector.videoHeight);
 
-            ctx.save();
-            ctx.scale(-1, 1);
-            ctx.translate(-detector.videoWidth, 0);
-            ctx.drawImage(video, 0, 0, detector.videoWidth, detector.videoHeight);
-            ctx.restore();
-
+                ctx.save();
+                ctx.scale(-1, 1);
+                ctx.translate(-detector.videoWidth, 0);
+                ctx.drawImage(video, 0, 0, detector.videoWidth, detector.videoHeight);
+                ctx.restore();
+            }
             //@Todo map player to position
 
             //There is at least one person
@@ -104,10 +107,11 @@ class PoseDetector {
                 //console.log("score:" + poses[0].score + "; confidence: " + detector.minPoseConfidence)
 
                 if (poses[0].score >= detector.minPoseConfidence) {
-
                     detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
-                    detector.drawKeypoints(poses[0].keypoints, detector.minPartConfidence, ctx);
-                    detector.drawSkeleton(poses[0].keypoints, detector.minPartConfidence, ctx);
+                    if (detector.debug) {
+                        detector.drawKeypoints(poses[0].keypoints, detector.minPartConfidence, ctx);
+                        detector.drawSkeleton(poses[0].keypoints, detector.minPartConfidence, ctx);
+                    }
                 }
 
             }
@@ -130,8 +134,8 @@ class PoseDetector {
             } else {
 //                console.log("NOT Head")
             }
-            this.intervalCounter = this.intervalCounter + 1
-            await poseDetection(this)
+            this.intervalCounter = this.intervalCounter + 1;
+            await poseDetection(this);
 
 
         }, this.samplerate);

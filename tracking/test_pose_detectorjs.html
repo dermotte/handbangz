@@ -48,7 +48,7 @@
             //loadPoseNet();
             let videoElement = document.getElementById('videostream');
             let audioElement = document.getElementById('audio');
-            poseDetector = new PoseDetector(250, videoElement, 640, 360, audioElement);
+            poseDetector = new PoseDetector(250, videoElement, 640, 360, audioElement, true);
             poseDetector.loadPoseNet();
 
         }
