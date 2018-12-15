@@ -58,8 +58,7 @@ function handleSceneKeys (event) {
 }
 
 function handleActionKeys (event) {
-    if (game != null && game.isReady()) {
-
+    if (game != null && game.isReady() && currentScene === game) {
         switch(event.key)
         {
             case "a":
@@ -79,7 +78,22 @@ function handleActionKeys (event) {
             default:
                 break;
         }
+    } else  if (menu != null && menu.isReady() && currentScene === menu) {
+        switch(event.key)
+        {
+            case "ArrowUp":
+                menu.state += 2;
+                menu.state = menu.state%3;
+                break;
+            case "ArrowDown":
+                menu.state += 1;
+                menu.state = menu.state%3;
+                break;
+            default:
+                break;
 
+        }
+        console.log(menu.state);
     }
 }
 
