@@ -9,8 +9,8 @@ var nmsRadius = 20.0;
 const videoWidth = 640;
 const videoHeight = 360;
 
-var playerOne = new Person("Player 1");
-var playerTwo = new Person("Player 2");
+var playerOne = new Player("Player 1");
+var playerTwo = new Player("Player 2");
 
 async function bindCamera() {
     console.log("Bind camera ...")
