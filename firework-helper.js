@@ -131,7 +131,7 @@ class FireworkHelper {
         fireSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
         // Set the gravity of all particles
-        fireSystem.gravity = new BABYLON.Vector3(0, 0, 0);
+        fireSystem.gravity = new BABYLON.Vector3(0,  -9.81, 0);
 
         // Direction of each particle after it has been emitted
         fireSystem.direction1 = new BABYLON.Vector3(angleDirection, 8, -3);

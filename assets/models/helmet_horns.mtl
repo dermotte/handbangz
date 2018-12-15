@@ -1,7 +1,7 @@
-# Blender MTL File: 'headbanger_props_dec.blend'
+# Blender MTL File: 'None'
 # Material Count: 2
 
-newmtl Black
+newmtl Black.001
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.061264 0.061264 0.061264
@@ -11,7 +11,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Silver
+newmtl Silver.001
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
