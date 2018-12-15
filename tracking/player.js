@@ -3,7 +3,9 @@ class Player {
     constructor(name){
         this.name = name;
         this.nosePositions = [];
-        this.state = "DOWN"
+        this.rightWristPositions = [];
+        this.leftWristPositions = [];
+//        this.state = "DOWN"
     }
 
 }

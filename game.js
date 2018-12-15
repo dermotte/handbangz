@@ -42,8 +42,6 @@ class Game {
         this.videoWall;
 
         this.scene;
-        this.actionMap = new ActionMap(this);
-        this.gamepad = new Gamepad(this);
 
         // Stats of the current game
         this.score = 0;
@@ -52,6 +50,10 @@ class Game {
         // sound
         this.soundMachine = new SoundMachine();
         // this.currentSong = null;
+
+        let videoElement = document.getElementById('videostream');
+        this.poseDetector = new PoseDetector(250, videoElement, 640, 360);
+        this.poseDetector.loadPoseNet();
 
     }
 
