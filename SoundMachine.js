@@ -31,16 +31,25 @@ class SoundMachine {
     songChain(curSong, scene) {
         if (!scene) return;
 
-        console.log("Song: " + curSong);
-        this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
-        let nextSong = this.getRandomPart();
-        this.currentSong.onended = () => {this.songChain(nextSong, scene);};
+        console.log("Song: ");
+        console.log(curSong);
+        
+        let nextSong = new BABYLON.Sound("current", this.getRandomPart(), scene, null, {autoplay: false, loop: false});
+        curSong.onended = () => {
+            this.songChain(nextSong, scene);
+        };
+        curSong.play();
+        // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
+        // let nextSong = this.getRandomPart();
+        // this.currentSong.onended = () => {this.songChain(nextSong, scene);};
 
     }
 
     startLoop(scene) {
-        console.log(scene);
-        this.songChain(this.getRandomPart(), scene);
+        // console.log(scene);
+        let curSong = new BABYLON.Sound("current", this.getRandomPart(), scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
+
+        // this.songChain(curSong, scene);
     }
 
 }

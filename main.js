@@ -51,20 +51,19 @@ function handleSceneKeys (event) {
 
 
 function setNewScene(newScene) {
+    console.log(newScene);
     if (newScene != null) {
         if (currentScene) {
             currentScene.dispose();
         }
         currentScene = newScene;
-    }
-    if (newScene != null && currentScene) {
         currentScene.createScene();
         currentScene.onLoad();
     }
 }
 
 function handleActionKeys (event) {
-    if (game != null && game.isReady() && currentScene === game) {
+    if (currentScene === game && game.isReady()) {
         switch(event.key)
         {
             case "a":
@@ -84,7 +83,7 @@ function handleActionKeys (event) {
             default:
                 break;
         }
-    } else  if (menu != null && menu.isReady() && currentScene === menu) {
+    } else if (currentScene === menu &&  menu.isReady()) {
         switch(event.key)
         {
             case "ArrowUp":
