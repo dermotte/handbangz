@@ -288,6 +288,54 @@ class Game {
         this.hud.addControl(playerOneScore);
     }
 
+    showUserMessage(msg) {
+
+        let myTempHud = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        let tempMessage = new BABYLON.GUI.TextBlock("user_message");
+        tempMessage.text = msg;
+        tempMessage.fontSize = 50;
+        tempMessage.color = '#FFF';
+        tempMessage.shadowBlur = 3;
+        tempMessage.shadowColor = "#FFF";
+        tempMessage.fontFamily =  'New Rocker';
+        tempMessage.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
+        tempMessage.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
+        tempMessage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        tempMessage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        tempMessage.paddingRight = "50px";
+        tempMessage.paddingTop = "50px";
+        myTempHud.addControl(tempMessage);
+
+        let animationHideText = new BABYLON.Animation("fade_me_message", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+        let keys = [];
+
+        keys.push({
+         frame: 0,
+         value: 1
+        });
+
+        keys.push({
+         frame: 50,
+         value: 1
+        });
+
+        keys.push({
+         frame: 100,
+         value: 0
+        });
+
+        animationHideText.setKeys(keys);
+        tempMessage.animations = [];
+        tempMessage.animations.push(animationHideText);
+        this.scene.beginAnimation(tempMessage, 0, 100, false, 1,
+        () => {
+            tempMessage.dispose();
+            myTempHud.dispose();
+        });
+
+    }
+
     setPlayerOneScore(score) {
         this.playerOneScoreLabel.text = "Player 1: " + score;
     }
@@ -368,7 +416,9 @@ class Game {
     onLoad() {
         self.score = 0;
         // preload first song
-        let curSong = new BABYLON.Sound("current", this.soundMachine.getRandomPart(), this.scene, null, {autoplay: false, loop: false});
+        let songUrl = this.soundMachine.getRandomPart();
+        let curSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
+        curSong.songUrl = songUrl;
         this.soundMachine.startCountIn(2,this.scene,
             () => {
                 this.soundMachine.songChain(curSong, this.scene);

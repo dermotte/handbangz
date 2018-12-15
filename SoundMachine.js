@@ -6,6 +6,11 @@ class SoundMachine {
             fast: ["Headbangz_song1_toms.mp3"],
             silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
         };
+        this.messages = {
+            slow:  "Bang!!",
+            fast: "Double Bang!!",
+            silent: "It's a ballad!"
+        }
 
         this.countIn = null;
     }
@@ -28,6 +33,21 @@ class SoundMachine {
         return Math.floor(Math.random() * max_value);
     }
 
+    getUserMessageForSong(song) {
+
+        let ret = "";
+        let songName = song.replace(this.songBaseUrl, "");
+        // console.log(songName);
+        Object.keys(this.songParts).forEach( (key) => {
+            if (this.songParts[key].includes(songName)) {
+                ret = this.messages[""+key];
+                // console.log(ret);
+            };
+
+        });
+
+        return ret;
+    }
 
     playCountIn(number, scene, onComplete) {
         if (number == 0) {
@@ -49,10 +69,12 @@ class SoundMachine {
     songChain(curSong, scene) {
         if (!scene) return;
 
-        console.log("Song: ");
-        console.log(curSong);
+        // console.log("Song: ");
+        // console.log(curSong);
 
-        let nextSong = new BABYLON.Sound("current", this.getRandomPart(), scene, null, {autoplay: false, loop: false});
+        let songUrl = this.getRandomPart();
+        let nextSong = new BABYLON.Sound("current", songUrl, scene, null, {autoplay: false, loop: false});
+        nextSong.songUrl = songUrl;
         curSong.onended = () => {
             this.songChain(nextSong, scene);
         };
@@ -61,6 +83,7 @@ class SoundMachine {
         curSong.play();
         if (game) {
             game.startLightSwitching();
+            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl));
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
@@ -70,7 +93,9 @@ class SoundMachine {
 
     startLoop(scene) {
         // console.log(scene);
-        // let curSong = new BABYLON.Sound("current", this.getRandomPart(), scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
+        // let songUrl = this.getRandomPart();
+        // let curSong = new BABYLON.Sound("current", , scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
+        // curSong.songUrl = songUrl;
     }
 
 }
