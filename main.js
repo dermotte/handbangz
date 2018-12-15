@@ -66,8 +66,13 @@ function handleActionKeys (event) {
                 game.startFirework();
                 break;
             case "s":
-                console.log("StopFirework");
                 game.stopFirework();
+                break;
+            case "d":
+                game.switchOnGreen();
+                break;
+            case "f":
+                game.startLightSwitching();
                 break;
             default:
                 break;

@@ -24,6 +24,7 @@ class Game {
         this.flash2;
         this.flash3;
         this.flash4;
+        this.flashlightInterval;
 
         // Fireworks
         this.leftFirework;
@@ -191,6 +192,21 @@ class Game {
         this.rightFirework.getEmittedParticleSystems()[1].emitRate = 0;
     }
 
+    startLightSwitching() {
+        // Interval
+        this.flashlightInterval = setInterval(() => {this.toggleGreenRed();}, 500);
+    }
+
+    toggleGreenRed() {
+        if (this.flash3.intensity == 1) {
+            this.switchOffGreen();
+            this.switchOnRed();
+        } else {
+            this.switchOffRed();
+            this.switchOnGreen();
+        }
+    }
+
     switchOnGreen() {
         this.flash3.intensity = 1;
         this.flash4.intensity = 1;
@@ -223,6 +239,7 @@ class Game {
     }
 
     dispose() {
+        clearInterval(this.flashlightInterval);
         this.scene.dispose();
     }
 
