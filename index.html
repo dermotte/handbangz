@@ -44,13 +44,14 @@
     <script src="game.js" defer></script>
     <script src="menu.js" defer></script>
     <script src="theEnd.js" defer></script>
+    <script src="SoundMachine.js" defer></script>    
     <script src="main.js" defer></script>
     <script src="tracking/player.js"></script>
     <script src="tracking/pose_detection.js" defer></script>
 
 </head>
 
-<body onkeypress="handlKeyPress(event)" onload="loadPoseNet()">
+<body onkeyup="handlKeyPress(event)" onload="loadPoseNet()">
     <div id="userInfo" style="position:absolute;">
         All Scenes (Press Keys): <br>
         1: Introduction <br>

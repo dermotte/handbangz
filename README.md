@@ -75,3 +75,4 @@ Andi Leibetseder -
 Bernd Münzer - 
 Mathias Lux - 
 Armin Lippitz - Hard Rock Consulting Inc.
+Georg Wieser - VERT pUSHER
