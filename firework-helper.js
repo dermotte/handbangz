@@ -2,7 +2,7 @@
 class FireworkHelper {
 
     constructor() {
-        this.particlePath = "assets/images/textures/flare.png";
+        this.particlePath = "assets/images/textures/xplode_particle.png";
     }
 
     createParticles(scene, position, animated, angleDirection = 7) {
