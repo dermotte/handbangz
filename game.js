@@ -47,7 +47,7 @@ class Game {
 
         // Stats of the current game
         this.score = 0;
-        this.lastHeadUp = null;
+        this.lastHeadUp = new Date().getTime();
     }
 
     createScene () {
@@ -300,11 +300,16 @@ class Game {
     }
 
     headUpTriggered() {
-        let time = new Date().getMilliseconds();
-        if (this.lastHeadUp == null || Math.abs(this.lastHeadUp - time) < 50) {
+        let currentTime = new Date().getTime();
+        let bangInterval = currentTime - this.lastHeadUp;
+        console.log(bangInterval  + "; last currentTime: " + this.lastHeadUp + "; currentTime: " + currentTime);
+
+        if (bangInterval > 900 && bangInterval < 1100) {
             this.score += 1;
         }
-        this.lastHeadUp = time;
+        this.lastHeadUp = currentTime;
+
+        this.setPlayerOneScore(this.score);
     }
 
     onLoad() {

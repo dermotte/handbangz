@@ -98,7 +98,11 @@ window.addEventListener("resize", function () {
 });
 
 window.addEventListener("headup", function () {
-    console.log("head up")
+    console.log("head up");
+
+    if (game != null && game.isReady()) {
+        game.headUpTriggered();
+    }
 });
 
 window.addEventListener("headdown", function () {
