@@ -94,3 +94,11 @@ engine.runRenderLoop(function () {
 window.addEventListener("resize", function () {
     engine.resize();
 });
+
+window.addEventListener("headup", function () {
+    console.log("head up")
+});
+
+window.addEventListener("headdown", function () {
+    console.log("head down")
+});

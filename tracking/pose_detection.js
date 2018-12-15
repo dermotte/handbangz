@@ -121,6 +121,9 @@ function detectPoses(video, net) {
 
 }
 
+var event_headup = new Event('headup');
+var event_headdown = new Event('headdown');
+
 function recognizePose(keypoints, minConfidence, player){
     let type = document.getElementById('type');
     let x = document.getElementById('x');
@@ -151,12 +154,12 @@ function recognizePose(keypoints, minConfidence, player){
                     let x_prev = Math.round(player.nosePositions[iPos-1][0] / 10) * 10;
                     let y_prev = Math.round(player.nosePositions[iPos-1][1] / 10) * 10;
 
-                    if (player.state == "DOWN") {
+                    if (player.state === "DOWN") {
                         if (y_cur >= y_prev) {
                             correct_movement = false;
                         }
 
-                    }else if(player.state == "UP"){
+                    }else if(player.state === "UP"){
                         if (y_cur <= y_prev) {
                             correct_movement = false;
                         }
@@ -166,11 +169,13 @@ function recognizePose(keypoints, minConfidence, player){
                 if (correct_movement && player.state == "DOWN") {
                     player.state = "UP";
                     type.innerHTML = "UP"
-                    console.log("UP");
+                    //console.log("UP");
+                    window.dispatchEvent(event_headup)
                 }else if (correct_movement && player.state == "UP"){
                     player.state = "DOWN";
                     type.innerHTML = "DOWN"
-                    console.log("DOWN");
+                    //console.log("DOWN");
+                    window.dispatchEvent(event_headdown)
                 }
             }
             //text_nose.innerHTML = "Nose: " + keypoint.position.x + ", " + keypoint.position.y
