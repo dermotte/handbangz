@@ -595,7 +595,6 @@ class Game {
 
         if (this.gameOver) return;
 
-        this.soundMachine.render();
         this.updatePlayerScores();
 
         // game over
