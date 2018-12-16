@@ -3,7 +3,7 @@ class SoundMachine {
         this.tempo = 120;
         this.beattime = 60000/this.tempo;
         this.tolerance = 100;
-        
+
         this.songBaseUrl = "assets/music/songs/";
         this.songParts = {
             slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
@@ -13,7 +13,7 @@ class SoundMachine {
         this.messages = {
             slow:  "Bang!!",
             fast: "Double Bang!!",
-            silent: "It's a ballad!"
+            silent: "Show me the light!!"
         }
         this.startTimestamp;
         this.curSong;
@@ -85,14 +85,14 @@ class SoundMachine {
         };
 
 
-        
+
         curSong.play();
 //        console.log("part duration: " + (new Date().getTime() - this.startTimestamp));
         this.startTimestamp = new Date().getTime();
         this.curSong = curSong;
         if (game) {
             game.startLightSwitching();
-            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl));
+            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl), BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
             game.poseDetector.detectPoses();
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
@@ -100,16 +100,16 @@ class SoundMachine {
         // this.currentSong.onended = () => {this.songChain(nextSong, scene);};
 
     }
-    
+
     isOnBeat() {
         if (!this.curSong) {
             return false;
         }
         let time = new Date().getTime() - this.startTimestamp;
-        let timeOffset = time % this.beattime;        
+        let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
     }
-    
+
     startLoop(scene) {
         // console.log(scene);
         // let songUrl = this.getRandomPart();

@@ -27,8 +27,9 @@ class Game {
         this.flashlightInterval;
 
         // Fireworks
-        this.leftFirework;
-        this.rightFirework;
+        this.fireworkHelper = new FireworkHelper();
+        this.leftFirework = null;
+        this.rightFirework = null;
 
         // Actors
         this.leftActor;
@@ -44,8 +45,24 @@ class Game {
         this.scene;
 
         // Stats of the current game
-        this.score = 0;
+        this.playerStats = {
+            player1: {
+                score: 0,
+                hitsInARow: 0,
+                onFire: false
+            },
+            player2: {
+                score: 0,
+                hitsInARow: 0,
+                onFire: false
+            }
+        }
+        this.winScore = 100;
+        this.loseScore = 0;
+        this.fireWorkScore = 80;
         this.lastHeadUp = new Date().getTime();
+        this.startingScore = 50;
+        this.gameOver = false;
 
         // sound
         this.soundMachine = new SoundMachine();
@@ -221,6 +238,10 @@ class Game {
         var leftActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy_256.mp4"], scene, true, true);
         leftActorMaterial.diffuseTexture = leftActorTexture;
         this.leftActor.material = leftActorMaterial;
+        this.leftActorVideo = leftActorMaterial.diffuseTexture.video;
+        this.leftActorVideo.currentTime = 1;
+        this.leftActorVideo.pause();
+
         this.rightActor = BABYLON.MeshBuilder.CreateBox("rightActor", {height: 2, width: 2, depth: 0.01}, scene);
         this.rightActor.position.y = 2;
         this.rightActor.position.x = -4.5;
@@ -229,6 +250,9 @@ class Game {
         var rightActorTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_girl_256.mp4"], scene, true, true);
         rightActorMaterial.diffuseTexture = rightActorTexture;
         this.rightActor.material = rightActorMaterial;
+        this.rightActorVideo = rightActorMaterial.diffuseTexture.video;
+        this.rightActorVideo.currentTime = 1.3;
+        this.rightActorVideo.pause();
 
         //this.createFirework();
         this.switchOffGreen();
@@ -266,6 +290,8 @@ class Game {
         playerTwoScore.fontSize = 50;
         playerTwoScore.color = '#A5400C';
         playerTwoScore.fontFamily = 'New Rocker';
+        playerTwoScore.shadowBlur = 3;
+        playerTwoScore.shadowColor = "#000";
         playerTwoScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
         playerTwoScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
         playerTwoScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -280,6 +306,8 @@ class Game {
         playerOneScore.fontSize = 50;
         playerOneScore.color = '#A5400C';
         playerOneScore.fontFamily = 'New Rocker';
+        playerOneScore.shadowBlur = 3;
+        playerOneScore.shadowColor = "#000";
         playerOneScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
         playerOneScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
         playerOneScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -290,7 +318,7 @@ class Game {
         this.hud.addControl(playerOneScore);
     }
 
-    showUserMessage(msg) {
+    showUserMessage(msg, location = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation = null) {
 
         let myTempHud = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -299,9 +327,9 @@ class Game {
         tempMessage.fontSize = 50;
         tempMessage.color = '#FFF';
         tempMessage.shadowBlur = 3;
-        tempMessage.shadowColor = "#FFF";
+        tempMessage.shadowColor = "#000";
         tempMessage.fontFamily = 'New Rocker';
-        tempMessage.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
+        tempMessage.textVerticalAlignment = location;
         tempMessage.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
         tempMessage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         tempMessage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -334,6 +362,7 @@ class Game {
                 () => {
             tempMessage.dispose();
             myTempHud.dispose();
+            if (onFinishAnimation) onFinishAnimation();
         });
 
     }
@@ -346,24 +375,49 @@ class Game {
         this.playerTwoScoreLabel.text = score + " : Player 2";
     }
 
-    startFirework() {
-        if (this.leftFirework == null && this.rightFirework == null) {
-            let fireworkHelper = new FireworkHelper();
-            this.leftFirework = fireworkHelper.createParticles(this.scene, {x: 7.5, y: 0, z: 4}, false, 3);
-            this.rightFirework = fireworkHelper.createParticles(this.scene, {x: -7.5, y: 0, z: 4}, false, 3);
-        } else {
-            this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
-            this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
-            this.rightFirework.getEmittedParticleSystems()[0].emitRate = 350;
-            this.rightFirework.getEmittedParticleSystems()[1].emitRate = 350;
+    updatePlayerScores() {
+        // console.log(this.playerOneScoreLabel);
+        if (this.playerOneScoreLabel) this.playerOneScoreLabel.text = "Player 1: " + this.playerStats.player1.score;
+        if (this.playerTwoScoreLabel) this.playerTwoScoreLabel.text = this.playerStats.player2.score + " : Player 2";
+    }
+
+    // input: "left", "right"
+    startFirework(location) {
+
+        console.log(location);
+
+        if (location === "left") {
+            if (!this.leftFirework) {
+                this.leftFirework = this.fireworkHelper.createParticles(this.scene, {x: 7.5, y: 0, z: 4}, false, 3);
+            } else {
+                console.log("in here");
+                console.log(this.leftFirework);
+                this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
+                this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
+            }
+        }
+        else if (location === "right") {
+            if (!this.rightFirework) {
+                this.rightFirework = this.fireworkHelper.createParticles(this.scene, {x: -7.5, y: 0, z: 4}, false, 3);
+            } else {
+                this.rightFirework.getEmittedParticleSystems()[0].emitRate = 350;
+                this.rightFirework.getEmittedParticleSystems()[1].emitRate = 350;
+            }
         }
     }
 
-    stopFirework() {
-        this.leftFirework.getEmittedParticleSystems()[0].emitRate = 0;
-        this.leftFirework.getEmittedParticleSystems()[1].emitRate = 0;
-        this.rightFirework.getEmittedParticleSystems()[0].emitRate = 0;
-        this.rightFirework.getEmittedParticleSystems()[1].emitRate = 0;
+    // input: "left", "right"
+    stopFirework(location) {
+
+        if (location === "left" && this.leftFirework) {
+            this.leftFirework.getEmittedParticleSystems()[0].emitRate = 0;
+            this.leftFirework.getEmittedParticleSystems()[1].emitRate = 0;
+        }
+
+        if (location === "right" && this.rightFirework) {
+            this.rightFirework.getEmittedParticleSystems()[0].emitRate = 0;
+            this.rightFirework.getEmittedParticleSystems()[1].emitRate = 0;
+        }
     }
 
     startLightSwitching() {
@@ -411,45 +465,52 @@ class Game {
         console.log(bangInterval + "; last currentTime: " + this.lastHeadUp + "; currentTime: " + currentTime);
 
         if (bangInterval > 900 && bangInterval < 1100) {
-            this.score += 1;
+            this.playerStats.player1.score += 1;
         }
         this.lastHeadUp = currentTime;
 
-        this.setPlayerOneScore(this.score);
     }
 
     actionDetected(action) {
 //        console.log("action: " + action);
 
         if (action != "FAIL") {
-            this.setPlayerOneScore(++this.score);
+            this.playerStats.player1.score++;
         } else {
 //            console.log("SHIT");
-            this.setPlayerOneScore(--this.score);
+            this.playerStats.player1.score--;
         }
 
 //        if (this.soundMachine.isOnBeat()) {
 ////            console.log("HIT");
-//            this.setPlayerOneScore(++this.score);
+//            this.setPlayerOneScore(++this.playerStats.player1.score);
 //        } else {
 ////            console.log("SHIT");
-//            this.setPlayerOneScore(--this.score);
+//            this.setPlayerOneScore(--this.playerStats.player1.score);
 //        }
 
     }
 
     onLoad() {
-        this.score = 50;
+        this.playerStats.player1.score = this.startingScore;
+        this.playerStats.player2.score = this.startingScore;
         // preload first song
         let songUrl = this.soundMachine.getRandomPart();
         let curSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
         curSong.songUrl = songUrl;
-        this.soundMachine.startCountIn(2, this.scene,
-                () => {
-            this.soundMachine.songChain(curSong, this.scene);
-        }
+        this.soundMachine.startCountIn(2, this.scene, () => {
+                    this.soundMachine.songChain(curSong, this.scene);
+                    this.leftActorVideo.play();
+                    this.rightActorVideo.play();
+            }
         );
 
+    }
+
+    // YOU DIRTY CHEATER!
+    setScore(score) {
+        this.playerStats.player1.score = score;
+        // this.playerStats.player2.score = score;
     }
 
     isReady() {
@@ -457,7 +518,49 @@ class Game {
     }
 
     render() {
-        this.scene.render();
+
+        if (this.scene) this.scene.render();
+
+        if (this.gameOver) return;
+
+        this.updatePlayerScores();
+
+        // game over
+        if (this.playerStats.player1.score <= this.loseScore || this.playerStats.player2.score <= this.loseScore)
+        {
+            let msg = "";
+            console.log("fool");
+            if (this.playerStats.player1.score <= this.loseScore) msg += "Player 1 is a fool!! ";
+            if (this.playerStats.player1.score <= this.loseScore) msg += "Player 2 is a fool!! ";
+            this.gameOver = true;
+            this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
+                () => {
+                    // DON'T DELETE: delay scene disposal due to render issues
+                    setTimeout( () => {setNewScene(end);}, 10);
+                }
+            );
+
+        }
+
+        // start fire
+
+        if (this.playerStats.player1.score >= this.fireWorkScore && !this.playerStats.player1.onFire) {
+            this.playerStats.player1.onFire = true;
+            this.startFirework("left");
+            this.showUserMessage("Player 1 is on fire!");
+        } else if (this.playerStats.player1.score < this.fireWorkScore) {
+            this.stopFirework("left");
+            this.playerStats.player1.onFire = false;
+        }
+        if (this.playerStats.player2.score >= this.fireWorkScore && !this.playerStats.player2.onFire) {
+            this.playerStats.player2.onFire = true;
+            this.startFirework("right");
+            this.showUserMessage("Player 2 is on fire!");
+        } else if (this.playerStats.player2.score < this.fireWorkScore)  {
+            this.stopFirework("right");
+            this.playerStats.player2.onFire = false;
+        }
+
     }
 
     dispose() {

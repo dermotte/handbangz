@@ -67,10 +67,12 @@ function handleActionKeys (event) {
         switch(event.key)
         {
             case "a":
-                game.startFirework();
+                game.startFirework("left");
+                game.startFirework("right");
                 break;
             case "s":
-                game.stopFirework();
+                game.stopFirework("left");
+                game.stopFirework("left");
                 break;
             case "d":
                 game.switchOnGreen();
@@ -79,6 +81,12 @@ function handleActionKeys (event) {
                 game.startLightSwitching();
                 game.setPlayerOneScore(100);
                 game.setPlayerTwoScore(150);
+                break;
+            case "+":
+                game.setScore(game.playerStats.player1.score + 5);
+                break;
+            case "-":
+                game.setScore(game.playerStats.player1.score - 5);
                 break;
             default:
                 break;
