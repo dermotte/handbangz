@@ -296,7 +296,7 @@ class Game {
         var rightEyeMat = new BABYLON.StandardMaterial("rightEyeMat", scene);
         rightEyeMat.specularColor = new BABYLON.Color3(0, 0, 0);
         rightEyeMat.maxSimultaneousLights = 1;
-        this.rightEye.material = leftEyeMat;
+        this.rightEye.material = rightEyeMat;
 
         //var videoWallTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
         //videoWallMaterial.diffuseTexture = videoWallTexture;
@@ -543,6 +543,32 @@ class Game {
 
     notifyBang(player, corrrect) {
         console.log("Bang notification for player " + player + " is " + corrrect);
+        let eye = player == 1 ? this.leftEye : this.rightEye;
+
+        let color = corrrect ? new BABYLON.Color3(0.22, 0.73, 0.1) : new BABYLON.Color3(0.64, 0.17, 0.05);
+        //eye.material.emissiveColor = color;
+
+        var eyeAnimation = new BABYLON.Animation("eyeAnimation", "material.emissiveColor", 30, BABYLON.Animation.ANIMATIONTYPE_COLOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        var keys = [];
+
+        //At the animation key 0, the value of scaling is "1"
+        keys.push({
+            frame: 0,
+            value: color
+        });
+
+        //At the animation key 20, the value of scaling is "0.2"
+        keys.push({
+            frame: 10,
+            value: new BABYLON.Color3(0, 0, 0)
+        });
+
+        eyeAnimation.setKeys(keys);
+        eye.animations = [];
+        eye.animations.push(eyeAnimation);
+
+        this.scene.beginAnimation(eye, 0, 10, false);
+
     }
 
     isReady() {
