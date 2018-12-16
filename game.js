@@ -366,6 +366,22 @@ class Game {
         playerOneScore.paddingTop = "50px";
         this.playerOneScoreLabel = playerOneScore;
         this.hud.addControl(playerOneScore);
+
+        var gameMode = new BABYLON.GUI.TextBlock("gameMode");
+        gameMode.text = "";
+        gameMode.fontSize = 50;
+        gameMode.color = '#A5400C';
+        gameMode.fontFamily = 'New Rocker';
+        gameMode.shadowBlur = 3;
+        gameMode.shadowColor = "#000";
+        gameMode.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
+        gameMode.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+        gameMode.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        gameMode.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        gameMode.paddingLeft = "50px";
+        gameMode.paddingBottom = "30px";
+        this.gameMode = gameMode;
+        this.hud.addControl(gameMode);
     }
 
     showUserMessage(msg, location = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation = null) {

@@ -104,6 +104,7 @@ class SoundMachine {
             for (let i=1; i< curModes.length; i++) msg += " & " + curModes[i];
             msg += "!!";
             game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
+            game.gameMode.text = msg;
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
