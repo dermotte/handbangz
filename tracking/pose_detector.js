@@ -141,16 +141,26 @@ class PoseDetector {
 
             if(nosePosX >= (tmpWindow) && nosePosX <= (tmpWindow * 2.0)){
                 console.log("One player in the middle")
-                if(this.playerOne === null)
+                if(this.playerOne === null){
                     this.playerOne = new Player("player1")
+                    this.playerOne.addNosePosition(nosePosX)
+                }
+                continue;
+
             }else if(nosePosX <= (displayWidth / 2.0)){
                 console.log("player left")
-                if(this.playerOne === null)
+                if(this.playerOne === null){
                     this.playerOne = new Player("player1")
+                    this.playerOne.addNosePosition(nosePosX)
+                }
+
             }else if(nosePosX >= (displayWidth / 2.0)){
                 console.log("player right")
-                if(this.playerTwo === null)
+                if(this.playerTwo === null){
                     this.playerTwo = new Player("player2")
+                    this.playerTwo.addNosePosition(nosePosX)
+                }
+
             }
         }
 
