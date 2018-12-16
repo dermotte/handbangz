@@ -84,6 +84,7 @@ function handleActionKeys (event) {
                 break;
             case "+":
                 game.setScore(game.playerStats.player1.score + 5);
+                game.addToStreak(4);
                 break;
             case "-":
                 game.setScore(game.playerStats.player1.score - 5);

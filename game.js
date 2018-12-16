@@ -42,6 +42,9 @@ class Game {
 
         this.videoWall;
 
+        this.leftEye;
+        this.rightEye;
+
         this.scene;
 
         // Stats of the current game
@@ -49,12 +52,16 @@ class Game {
             player1: {
                 score: 0,
                 hitsInARow: 0,
-                onFire: false
+                onFire: false,
+                bangNotification: null,
+                streakNotification: null
             },
             player2: {
                 score: 0,
                 hitsInARow: 0,
-                onFire: false
+                onFire: false,
+                bangNotification: null,
+                streakNotification: null
             }
         }
         this.winScore = 100;
@@ -274,6 +281,25 @@ class Game {
             plane.material = videoWallMaterial;
         }, {maxWidth: 256, maxHeight: 256});
 
+
+        // Eyes for the scull
+        this.leftEye= BABYLON.MeshBuilder.CreateSphere("leftEye", {diameter: 0.4}, scene);
+        this.leftEye.position.x = 0.30
+        this.leftEye.position.y = 1.6;
+        this.leftEye.position.z = 2;
+        var leftEyeMat = new BABYLON.StandardMaterial("leftEyeMat", scene);
+        leftEyeMat.specularColor = new BABYLON.Color3(0, 0, 0);
+        leftEyeMat.maxSimultaneousLights = 1;
+        this.leftEye.material = leftEyeMat;
+        this.rightEye= BABYLON.MeshBuilder.CreateSphere("rightEye", {diameter: 0.4}, scene);
+        this.rightEye.position.x = -0.23;
+        this.rightEye.position.y = 1.6;
+        this.rightEye.position.z = 2;
+        var rightEyeMat = new BABYLON.StandardMaterial("rightEyeMat", scene);
+        rightEyeMat.specularColor = new BABYLON.Color3(0, 0, 0);
+        rightEyeMat.maxSimultaneousLights = 1;
+        this.rightEye.material = rightEyeMat;
+
         //var videoWallTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
         //videoWallMaterial.diffuseTexture = videoWallTexture;
         //this.videoWall.material = videoWallMaterial;
@@ -476,9 +502,21 @@ class Game {
 
         if (action != "FAIL") {
             this.playerStats.player1.score++;
+            this.playerStats.player1.hitsInARow++;
+
+            // Check if streak is 5, 10 or 20
+            if (this.playerStats.player1.hitsInARow == 5 ||
+                this.playerStats.player1.hitsInARow == 10 ||
+                this.playerStats.player1.hitsInARow == 20) {
+                this.playerStats.player1.score += 10;
+                this.playerStats.player1.streakNotification = true;
+            }
+            this.playerStats.player1.bangNotification = "CORRECT";
         } else {
 //            console.log("SHIT");
             this.playerStats.player1.score--;
+            this.playerStats.player1.hitsInARow = 0;
+            this.playerStats.player1.bangNotification = "INCORRECT";
         }
 
 //        if (this.soundMachine.isOnBeat()) {
@@ -511,6 +549,40 @@ class Game {
     setScore(score) {
         this.playerStats.player1.score = score;
         // this.playerStats.player2.score = score;
+    }
+
+    addToStreak(score) {
+        this.playerStats.player1.hitsInARow += score;
+    }
+
+    notifyBang(player, corrrect) {
+        //console.log("Bang notification for player " + player + " is " + corrrect);
+        let eye = player == 1 ? this.leftEye : this.rightEye;
+
+        let color = corrrect ? new BABYLON.Color3(0.22, 0.73, 0.1) : new BABYLON.Color3(0.64, 0.17, 0.05);
+        //eye.material.emissiveColor = color;
+
+        var eyeAnimation = new BABYLON.Animation("eyeAnimation", "material.emissiveColor", 30, BABYLON.Animation.ANIMATIONTYPE_COLOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+        var keys = [];
+
+        //At the animation key 0, the value of scaling is "1"
+        keys.push({
+            frame: 0,
+            value: color
+        });
+
+        //At the animation key 20, the value of scaling is "0.2"
+        keys.push({
+            frame: 10,
+            value: new BABYLON.Color3(0, 0, 0)
+        });
+
+        eyeAnimation.setKeys(keys);
+        eye.animations = [];
+        eye.animations.push(eyeAnimation);
+
+        this.scene.beginAnimation(eye, 0, 10, false);
+
     }
 
     isReady() {
@@ -560,6 +632,26 @@ class Game {
         } else if (this.playerStats.player2.score < this.fireWorkScore)  {
             this.stopFirework("right");
             this.playerStats.player2.onFire = false;
+        }
+
+        // Bang notifiaction
+        if (this.playerStats.player1.bangNotification != null) {
+            this.notifyBang(1, this.playerStats.player1.bangNotification == "CORRECT");
+            this.playerStats.player1.bangNotification = null;
+        }
+        if (this.playerStats.player1.bangNotification != null) {
+            this.notifyBang(2, this.playerStats.player2.bangNotification == "CORRECT");
+            this.playerStats.player2.bangNotification = null;
+        }
+
+        // Notifications about streaks
+        if (this.playerStats.player1.streakNotification != null) {
+            this.playerStats.player1.streakNotification = null;
+            this.showUserMessage("Player 1 has a streak! " + this.playerStats.player1.hitsInARow + " Bangs!");
+        }
+        if (this.playerStats.player2.streakNotification != null) {
+            this.playerStats.player2.streakNotification = null;
+            this.showUserMessage("Player 2 has a streak! " + this.playerStats.player2.hitsInARow + " Bangs!");
         }
 
     }
