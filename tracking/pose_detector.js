@@ -29,7 +29,7 @@ class PoseDetector {
         this.lineWidth = 2;
 
         this.debug = debug;
-        
+
 
     }
 
@@ -81,6 +81,7 @@ class PoseDetector {
         }
     }
 
+
     detectPoses() {
         console.log("Detect poses ...")
         const canvas = document.getElementById('output');
@@ -114,10 +115,12 @@ class PoseDetector {
                 //console.log("score:" + poses[0].score + "; confidence: " + detector.minPoseConfidence)
 
                 if (poses[0].score >= detector.minPoseConfidence) {
-                    detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
-                    if (detector.debug) {
+                    if(!detector.debug){
+                        detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
+                    }else{
                         detector.drawKeypoints(poses[0].keypoints, detector.minPartConfidence, ctx);
                         detector.drawSkeleton(poses[0].keypoints, detector.minPartConfidence, ctx);
+                        detector.testRecognizeMultiplePoses(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
                     }
                 }
 
@@ -155,6 +158,107 @@ class PoseDetector {
 
         }, this.samplerate);
 
+    }
+
+    testRecognizeMultiplePoses(keypoints, minConfidence, player){
+
+        let keypointMap = {};
+        for (let i = 0; i < keypoints.length; i++) {
+            keypointMap[keypoints[i].part] = keypoints[i];
+        }
+
+        let nose = keypointMap["nose"];
+        let rightWrist = keypointMap["rightWrist"];
+        let leftWrist = keypointMap["leftWrist"];
+        let rightShoulder = keypointMap["rightShoulder"];
+        let leftShoulder = keypointMap["leftShoulder"];
+
+        if (nose.score > minConfidence) {
+            let currentPoint = [nose.position.x, nose.position.y];
+            player.nosePositions.push(currentPoint);
+
+            x.innerHTML = nose.position.x.toFixed(4);
+            y.innerHTML = nose.position.y.toFixed(4);
+
+            if (player.nosePositions.length > 2) {
+
+                let y_cur = Math.round(currentPoint[1]);
+                let y_1 = Math.round(player.nosePositions[player.nosePositions.length - 2][1]);
+                let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
+
+                if (y_cur < y_1 && y_1 < y_2) {
+                    console.log("banged DOWN");
+                } else if (y_cur > y_1 && y_1 > y_2) {
+                    console.log("banged UP");
+                } else {
+                    console.log("FAIL");
+//                        console.log("WTFog");
+                }
+
+                player.nosePositions = [];
+                player.nosePositions.push([nose.position.x, nose.position.y]);
+            }
+        }
+
+        if (rightWrist.position.y < rightShoulder.position.y &&
+            leftWrist.position.y < leftShoulder.position.y) {
+            console.log("Both Hands up");
+        } else if (rightWrist.position.y < rightShoulder.position.y) {
+            console.log("Right Hand up")
+        } else if (leftWrist.position.y < leftShoulder.position.y) {
+            console.log("Left Hand up")
+        }
+
+
+        let shoulderSpan = Math.abs(leftShoulder.position.x - rightShoulder.position.x);
+        // lighter
+        if (rightWrist.position.y < rightShoulder.position.y && rightWrist.score > minConfidence) {
+            let currentPoint = [rightWrist.position.x, rightWrist.position.y];
+            player.rightWristPositions.push(currentPoint);
+
+            if (player.rightWristPositions.length > 4) {
+
+                let x_cur = Math.round(currentPoint[0]);
+                let x_1 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 2][0]);
+                let x_2 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 3][0]);
+                let x_3 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 4][0]);
+                let x_4 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 5][0]);
+
+                if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
+                    if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
+                        console.log("lighted left");
+                    } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
+                        console.log("lighted right");
+                    } else {
+//                        console.log("WTFog");
+                    }
+                }
+            }
+        }
+
+        if (leftWrist.position.y < leftShoulder.position.y && leftWrist.score > minConfidence) {
+            let currentPoint = [leftWrist.position.x, leftWrist.position.y];
+            player.leftWristPositions.push(currentPoint);
+
+            if (player.leftWristPositions.length > 4) {
+
+                let x_cur = Math.round(currentPoint[0]);
+                let x_1 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 2][0]);
+                let x_2 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 3][0]);
+                let x_3 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 4][0]);
+                let x_4 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 5][0]);
+
+                if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
+                    if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
+                        console.log("lighted left");
+                    } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
+                        console.log("lighted right");
+                    } else {
+//                        console.log("WTFog");
+                    }
+                }
+            }
+        }
     }
 
     recognizePose(keypoints, minConfidence, player) {
