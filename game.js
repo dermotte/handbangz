@@ -554,6 +554,10 @@ class Game {
                     if (this.modes[key] === key2) correctCount++;
                 }
             }
+
+            if (this.currentModes.length == 1) {
+                correctCount*=2;
+            }
             points += correctCount;
 
             if (correctCount > 0) {
