@@ -57,13 +57,13 @@ class Game {
 
     }
 
-    createScene () {
+    createScene() {
 
         // Create the scene space
         var scene = new BABYLON.Scene(engine);
 
         // Add a camera to the scene and attach it to the canvas
-        var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, 3 * Math.PI / 8, 10, new BABYLON.Vector3(0,5,7), scene);
+        var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, 3 * Math.PI / 8, 10, new BABYLON.Vector3(0, 5, 7), scene);
         // comment the scene to fix the camera
         camera.attachControl(canvas, true);
 
@@ -200,17 +200,17 @@ class Game {
         // this.flash3.intensity = 0;
         // this.flash4.intensity = 0;
         //this.flash1.diffuse = new BABYLON.Color3(0.64,0.17,0.05);
-        this.flash1.diffuse = new BABYLON.Color3(0.64,0.17,0.05);
-        this.flash1.specular = new BABYLON.Color3(0.64,0.17,0.05);
+        this.flash1.diffuse = new BABYLON.Color3(0.64, 0.17, 0.05);
+        this.flash1.specular = new BABYLON.Color3(0.64, 0.17, 0.05);
 
-        this.flash4.diffuse = new BABYLON.Color3(0.64,0.17,0.05);
-        this.flash4.specular = new BABYLON.Color3(0.64,0.17,0.05);
+        this.flash4.diffuse = new BABYLON.Color3(0.64, 0.17, 0.05);
+        this.flash4.specular = new BABYLON.Color3(0.64, 0.17, 0.05);
 
-        this.flash3.diffuse = new BABYLON.Color3(0.22,0.73,0.1);
-        this.flash3.specular = new BABYLON.Color3(0.64,0.73,0.1);
+        this.flash3.diffuse = new BABYLON.Color3(0.22, 0.73, 0.1);
+        this.flash3.specular = new BABYLON.Color3(0.64, 0.73, 0.1);
 
-        this.flash2.diffuse = new BABYLON.Color3(0.22,0.73,0.1);
-        this.flash2.specular = new BABYLON.Color3(0.64,0.73,0.1);
+        this.flash2.diffuse = new BABYLON.Color3(0.22, 0.73, 0.1);
+        this.flash2.specular = new BABYLON.Color3(0.64, 0.73, 0.1);
 
         // Actors
         this.leftActor = BABYLON.MeshBuilder.CreateBox("leftActor", {height: 2, width: 2, depth: 0.01}, scene);
@@ -245,27 +245,27 @@ class Game {
         var videoWallMaterial = new BABYLON.StandardMaterial("mat", scene);
 
         var plane = this.videoWall;
-        BABYLON.VideoTexture.CreateFromWebCam(scene, function(videoTexture) {
+        BABYLON.VideoTexture.CreateFromWebCam(scene, function (videoTexture) {
             videoWallMaterial.emissiveTexture = videoTexture;
             plane.material = videoWallMaterial;
-        }, { maxWidth: 256, maxHeight: 256 });
+        }, {maxWidth: 256, maxHeight: 256});
 
         //var videoWallTexture = new BABYLON.VideoTexture("video", ["assets/videos/headbang_boy.mp4"], scene, true, true);
         //videoWallMaterial.diffuseTexture = videoWallTexture;
         //this.videoWall.material = videoWallMaterial;
 
-        this.scene =  scene;
+        this.scene = scene;
     }
 
     addHUD() {
         // GUI
-        this.hud= BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        this.hud = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         var playerTwoScore = new BABYLON.GUI.TextBlock("playerTwoScore");
         playerTwoScore.text = "";
         playerTwoScore.fontSize = 50;
         playerTwoScore.color = '#A5400C';
-        playerTwoScore.fontFamily =  'New Rocker';
+        playerTwoScore.fontFamily = 'New Rocker';
         playerTwoScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
         playerTwoScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
         playerTwoScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -279,7 +279,7 @@ class Game {
         playerOneScore.text = "";
         playerOneScore.fontSize = 50;
         playerOneScore.color = '#A5400C';
-        playerOneScore.fontFamily =  'New Rocker';
+        playerOneScore.fontFamily = 'New Rocker';
         playerOneScore.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
         playerOneScore.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
         playerOneScore.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -300,7 +300,7 @@ class Game {
         tempMessage.color = '#FFF';
         tempMessage.shadowBlur = 3;
         tempMessage.shadowColor = "#FFF";
-        tempMessage.fontFamily =  'New Rocker';
+        tempMessage.fontFamily = 'New Rocker';
         tempMessage.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP;
         tempMessage.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
         tempMessage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
@@ -313,25 +313,25 @@ class Game {
         let keys = [];
 
         keys.push({
-         frame: 0,
-         value: 1
+            frame: 0,
+            value: 1
         });
 
         keys.push({
-         frame: 50,
-         value: 1
+            frame: 50,
+            value: 1
         });
 
         keys.push({
-         frame: 100,
-         value: 0
+            frame: 100,
+            value: 0
         });
 
         animationHideText.setKeys(keys);
         tempMessage.animations = [];
         tempMessage.animations.push(animationHideText);
         this.scene.beginAnimation(tempMessage, 0, 100, false, 1,
-        () => {
+                () => {
             tempMessage.dispose();
             myTempHud.dispose();
         });
@@ -367,9 +367,12 @@ class Game {
     }
 
     startLightSwitching() {
-        if(this.flashlightInterval) clearInterval(this.flashlightInterval);
+        if (this.flashlightInterval)
+            clearInterval(this.flashlightInterval);
         // Interval
-        this.flashlightInterval = setInterval(() => {this.toggleGreenRed();}, 500);
+        this.flashlightInterval = setInterval(() => {
+            this.toggleGreenRed();
+        }, 500);
     }
 
     toggleGreenRed() {
@@ -405,7 +408,7 @@ class Game {
     headUpTriggered() {
         let currentTime = new Date().getTime();
         let bangInterval = currentTime - this.lastHeadUp;
-        console.log(bangInterval  + "; last currentTime: " + this.lastHeadUp + "; currentTime: " + currentTime);
+        console.log(bangInterval + "; last currentTime: " + this.lastHeadUp + "; currentTime: " + currentTime);
 
         if (bangInterval > 900 && bangInterval < 1100) {
             this.score += 1;
@@ -415,16 +418,36 @@ class Game {
         this.setPlayerOneScore(this.score);
     }
 
+    actionDetected(action) {
+//        console.log("action: " + action);
+
+        if (action != "FAIL") {
+            this.setPlayerOneScore(++this.score);
+        } else {
+//            console.log("SHIT");
+            this.setPlayerOneScore(--this.score);
+        }
+
+//        if (this.soundMachine.isOnBeat()) {
+////            console.log("HIT");
+//            this.setPlayerOneScore(++this.score);
+//        } else {
+////            console.log("SHIT");
+//            this.setPlayerOneScore(--this.score);
+//        }
+
+    }
+
     onLoad() {
-        self.score = 0;
+        this.score = 50;
         // preload first song
         let songUrl = this.soundMachine.getRandomPart();
         let curSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
         curSong.songUrl = songUrl;
-        this.soundMachine.startCountIn(2,this.scene,
-            () => {
-                this.soundMachine.songChain(curSong, this.scene);
-            }
+        this.soundMachine.startCountIn(2, this.scene,
+                () => {
+            this.soundMachine.songChain(curSong, this.scene);
+        }
         );
 
     }

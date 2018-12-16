@@ -15,6 +15,9 @@ class PoseDetector {
         this.minPartConfidence = 0.5;
         this.nmsRadius = 20.0;
 
+        this.video;
+        this.net;
+
         this.playerOne = null;
         this.playerTwo = null;
 
@@ -61,21 +64,19 @@ class PoseDetector {
     async loadPoseNet() {
         console.log("Load posenet ...")
         // Load the PoseNet model weights for version 1.01
-        const net = await posenet.load();
-
-        let video;
+        this.net = await posenet.load();
 
         try {
-            video = await this.loadVideo();
+            this.video = await this.loadVideo();
         } catch (e) {
             console.error(e);
             return;
         }
 
-        this.detectPoses(video, net);
+//        this.detectPoses(video, net);
     }
 
-    detectPoses(video, net) {
+    detectPoses() {
         console.log("Detect poses ...")
         const canvas = document.getElementById('output');
         const ctx = canvas.getContext('2d');
@@ -84,9 +85,10 @@ class PoseDetector {
         canvas.height = this.videoHeight;
 
         async function poseDetection(detector) {
+
             let poses = [];
-            poses = await net.estimateMultiplePoses(
-                    video, 0.5, detector.flipHorizontal, detector.outputStride,
+            poses = await detector.net.estimateMultiplePoses(
+                    detector.video, 0.5, detector.flipHorizontal, detector.outputStride,
                     detector.maxPoseDetections, detector.minPartConfidence, detector.nmsRadius);
 
             if (detector.debug) {
@@ -95,7 +97,7 @@ class PoseDetector {
                 ctx.save();
                 ctx.scale(-1, 1);
                 ctx.translate(-detector.videoWidth, 0);
-                ctx.drawImage(video, 0, 0, detector.videoWidth, detector.videoHeight);
+                ctx.drawImage(detector.video, 0, 0, detector.videoWidth, detector.videoHeight);
                 ctx.restore();
             }
             //@Todo map player to position
@@ -119,7 +121,16 @@ class PoseDetector {
         }
 
         this.timestamp;
+        if (this.poseInterval) {
+            clearInterval(this.poseInterval);
+        }
+
+        poseDetection(this);
+
         this.poseInterval = setInterval(async () => {
+
+//
+//            console.log("POSE");
 
 //            let ts = new Date().getTime();
 //            let time = ts - this.timestamp;
@@ -136,7 +147,6 @@ class PoseDetector {
             }
             this.intervalCounter = this.intervalCounter + 1;
             await poseDetection(this);
-
 
         }, this.samplerate);
 
@@ -169,12 +179,16 @@ class PoseDetector {
                 let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
 
                 if (y_cur < y_1 && y_1 < y_2) {
-                    console.log("banged DOWN");
+                    game.actionDetected("banged DOWN");
                 } else if (y_cur > y_1 && y_1 > y_2) {
-                    console.log("banged UP");
+                    game.actionDetected("banged UP");
                 } else {
+                    game.actionDetected("FAIL");
 //                        console.log("WTFog");
                 }
+
+                player.nosePositions = [];
+                player.nosePositions.push([nose.position.x, nose.position.y]);
             }
         }
 
@@ -225,7 +239,7 @@ class PoseDetector {
                 let x_2 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 3][0]);
                 let x_3 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 4][0]);
                 let x_4 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 5][0]);
-                
+
                 if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
                     if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
                         console.log("lighted left");
