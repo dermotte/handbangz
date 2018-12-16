@@ -85,22 +85,20 @@ class SoundMachine {
             this.songChain(nextSong, scene);
         };
 
-
-
         curSong.play();
 //        console.log("part duration: " + (new Date().getTime() - this.startTimestamp));
         this.startTimestamp = new Date().getTime();
-        console.log("Sound Beat: " + this.startTimestamp); // first beats
-        this.beatInterval = setInterval(() =>
-            {
-            let time = new Date().getTime() - this.startTimestamp;
-            console.log("Sound Beat: " + time);
-        }, this.beattime);
+//        console.log("Sound Beat: " + this.startTimestamp); // first beats
+//        this.beatInterval = setInterval(() =>
+//            {
+//            let time = new Date().getTime() - this.startTimestamp;
+//            console.log("Sound Beat: " + time);
+//        }, this.beattime);
         this.curSong = curSong;
         if (game) {
+//            game.poseDetector.detectPoses();
             game.startLightSwitching();
-            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl), BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
-            game.poseDetector.detectPoses();
+            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl), BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);            
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
@@ -108,11 +106,15 @@ class SoundMachine {
 
     }
 
+    getCurrentTime() {
+        return new Date().getTime() - this.startTimestamp;
+    }
+
     isOnBeat() {
         if (!this.curSong) {
             return false;
         }
-        let time = new Date().getTime() - this.startTimestamp;
+        let time = this.getCurrentTime();
         let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
     }

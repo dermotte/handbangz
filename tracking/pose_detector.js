@@ -29,7 +29,7 @@ class PoseDetector {
         this.lineWidth = 2;
 
         this.debug = debug;
-
+        this.prevTimestamp;
 
     }
 
@@ -76,9 +76,9 @@ class PoseDetector {
             return;
         }
 
-        if (this.debug) {
+//        if (this.debug) {
             this.detectPoses();
-        }
+//        }
     }
 
 
@@ -91,10 +91,17 @@ class PoseDetector {
         canvas.height = this.videoHeight;
 
         // is called every 250ms
-        async function poseDetection(detector) {
-
+        async function poseDetection(detector, isBeat) {
+            
+            if (!game.soundMachine.startTimestamp) {
+                setTimeout(() => {
+                    poseDetection(detector, beat);
+                }, 250);
+                return;
+            }
             let timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
-
+//            console.log("pose detect", timestamp, isBeat);
+            
             let poses = [];
             poses = await detector.net.estimateMultiplePoses(
                     detector.video, 0.5, detector.flipHorizontal, detector.outputStride,
@@ -128,17 +135,28 @@ class PoseDetector {
                 }
 
             }
-
+            
+            var waittime = 250 - game.soundMachine.getCurrentTime() % 250;            
+            var timePassed = timestamp - detector.prevTimestamp;
+            detector.prevTimestamp = timestamp;
+            
+            var beat = game.soundMachine.getCurrentTime() % 500 < 100 || game.soundMachine.getCurrentTime() % 500 > 400;
+//            console.log(timestamp, timePassed);
+//            var waittime = detector.samplerate - timePassed;
+            setTimeout(() => {
+                poseDetection(detector, beat);
+            }, waittime);            
+//
         }
 
-        this.timestamp;
-        if (this.poseInterval) {
-            clearInterval(this.poseInterval);
-        }
+//        this.timestamp;
+//        if (this.poseInterval) {
+//            clearInterval(this.poseInterval);
+//        }
 
-        poseDetection(this);
+        poseDetection(this, true);
 
-        this.poseInterval = setInterval(async () => {
+//        this.poseInterval = setInterval(async () => {
 
 //
 //            console.log("POSE");
@@ -149,17 +167,17 @@ class PoseDetector {
 //            console.log(time);
 
 //            this.audioElement.play();
-            if (this.intervalCounter % 2 == 0) {
+//            if (this.intervalCounter % 2 == 0) {
 //                console.log("Head");
 //            document.getElementById("arrow")
 //fas fa-arrow-down
-            } else {
+//            } else {
 //                console.log("NOT Head")
-            }
-            this.intervalCounter = this.intervalCounter + 1;
-            poseDetection(this);
+//            }
+//            this.intervalCounter = this.intervalCounter + 1;
+//            poseDetection(this);
 
-        }, this.samplerate);
+//        }, this.samplerate);
 
     }
 
