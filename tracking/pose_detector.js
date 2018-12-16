@@ -144,7 +144,7 @@ class PoseDetector {
 //            console.log(timestamp, timePassed);
 //            var waittime = detector.samplerate - timePassed;
             setTimeout(() => {
-                poseDetection(detector, beat);
+                poseDetection(detector, game.soundMachine.isOnBeat(timestamp));
             }, waittime);            
 //
         }
@@ -284,7 +284,7 @@ class PoseDetector {
 
     recognizePose(keypoints, minConfidence, player, timestamp) {
 
-//        console.log(timestamp % 250);
+//        console.log(timestamp, game.soundMachine.isOnBeat(timestamp));
     
         let keypointMap = {};
         for (let i = 0; i < keypoints.length; i++) {
@@ -304,7 +304,7 @@ class PoseDetector {
             x.innerHTML = nose.position.x.toFixed(4);
             y.innerHTML = nose.position.y.toFixed(4);
 
-            if (player.nosePositions.length > 2) {
+            if (player.nosePositions.length > 2 && game.soundMachine.isOnBeat(timestamp)) {
 
                 let y_cur = Math.round(currentPoint[1]);
                 let y_1 = Math.round(player.nosePositions[player.nosePositions.length - 2][1]);

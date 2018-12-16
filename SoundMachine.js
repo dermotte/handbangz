@@ -2,7 +2,7 @@ class SoundMachine {
     constructor() {
         this.tempo = 120;
         this.beattime = 60000/this.tempo;
-        this.tolerance = 100;
+        this.tolerance = 200;
 
         this.songBaseUrl = "assets/music/songs/";
         this.songParts = {
@@ -108,13 +108,13 @@ class SoundMachine {
 
     getCurrentTime() {
         return new Date().getTime() - this.startTimestamp;
-    }
+    } 
 
-    isOnBeat() {
+
+    isOnBeat(time) {
         if (!this.curSong) {
             return false;
         }
-        let time = this.getCurrentTime();
         let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
     }
