@@ -73,6 +73,14 @@ class Game {
         this.lastHeadUp = new Date().getTime();
         this.startingScore = 50;
         this.gameOver = false;
+        this.modes = {
+                bang: "Bang",
+                // dBang: "Double Bang",
+                horn: "Evil Horns",
+                // light: "Light",
+                dHorn: "Very Evil Horns"
+        };
+        this.currentModes = [];
 
         // sound
         this.soundMachine = new SoundMachine();
@@ -702,6 +710,21 @@ class Game {
         }
 
 
+    }
+
+    switchModes(songUrl) {
+        this.currentModes = [];
+        let numModes = Math.floor(Math.random() * 2) + 1; // rnd int betw 1 and 2
+        for (let i=0;i<numModes;i++){
+            let keys = Object.keys(this.modes);
+            let rndKeyIndex = Math.floor(Math.random() * (keys.length-1)) + 1;
+            let newMode = this.modes[keys[""+rndKeyIndex]];
+            if (i > 0 && this.currentModes[i-1] === newMode) newMode = this.modes[keys[""+(rndKeyIndex+1) % keys.length]];
+            this.currentModes.push(newMode);
+        }
+        // console.log("--------------------------------------- current");
+        // console.log(this.currentModes);
+        return this.currentModes;
     }
 
     dispose() {
