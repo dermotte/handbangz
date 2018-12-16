@@ -29,14 +29,17 @@ class PoseDetector {
         this.lineWidth = 2;
 
         this.debug = debug;
+        
 
     }
 
     async bindCamera() {
         console.log("Bind camera ...")
 
-        if (this.videoElement)
+        if (!this.videoElement) {
             console.log("Video Element is not defined ....")
+            return;
+        }
 
         // Create a camera object.
         const video = this.videoElement;
@@ -73,7 +76,9 @@ class PoseDetector {
             return;
         }
 
-//        this.detectPoses(video, net);
+        if (this.debug) {
+            this.detectPoses();
+        }
     }
 
     detectPoses() {
