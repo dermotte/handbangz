@@ -79,7 +79,6 @@ class PoseDetector {
         if (this.debug) {
 
             this.initGameAndCountPlayer();
-            //this.detectPoses();
         }
     }
 
@@ -106,8 +105,10 @@ class PoseDetector {
             if(intervalCnt === 20){
                 clearInterval(this.poseInterval)
 
-                console.log("detected players: " + this.playerOne)
-                console.log("detected players: " + this.playerTwo)
+                console.log("detected players: " + (this.playerOne ? this.playerOne.name : " no player one"))
+                console.log("detected players: " + (this.playerTwo ? this.playerTwo.name : " no player two"))
+
+                this.detectPoses();
             }
 
 
@@ -115,7 +116,7 @@ class PoseDetector {
     }
 
     async countPlayers(ctx) {
-        console.log("Shake your hands ...")
+        //console.log("Shake your hands ...")
 
         let poses = [];
         poses = await this.net.estimateMultiplePoses(
@@ -179,7 +180,9 @@ class PoseDetector {
     // is called every 250ms
     async poseDetection(ctx) {
 
-        let timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
+        let timestamp = 0
+        if(!this.debug)
+            timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
 
         let poses = [];
         poses = await this.net.estimateMultiplePoses(
@@ -198,7 +201,25 @@ class PoseDetector {
         //@Todo map player to position
 
         for(let iPos = 0; iPos < poses.length; iPos++){
+            for(let iKeypoint = 0; iKeypoint < poses[iPos].keypoints.length; iKeypoint++){
+                //console.log(" ", poses[iPos].keypoints[iKeypoint].part)
 
+                if(poses[iPos].keypoints[iKeypoint].part === "nose"){
+                    //console.log("nose position: ", poses[iPos].keypoints[iKeypoint].position.x)
+
+                    if(this.playerOne !== null){
+                        if(poses[iPos].keypoints[iKeypoint].position.x <= (this.videoWidth / 2.0)){
+                            console.log("Nose pos: ", iPos, " from player one: ", poses[iPos].keypoints[iKeypoint].position.x)
+                        }
+                    }
+
+                    if(this.playerTwo !== null){
+                        if(poses[iPos].keypoints[iKeypoint].position.x > (this.videoWidth / 2.0)){
+                            console.log("Nose pos: ", iPos, " from player two", poses[iPos].keypoints[iKeypoint].position.x)
+                        }
+                    }
+                }
+            }
         }
 
         //There is at least one person
