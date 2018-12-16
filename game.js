@@ -54,15 +54,18 @@ class Game {
                 hitsInARow: 0,
                 onFire: false,
                 bangNotification: null,
-                streakNotification: null
+                streakNotification: null,
+                won: false
             },
             player2: {
                 score: 0,
                 hitsInARow: 0,
                 onFire: false,
                 bangNotification: null,
-                streakNotification: null
-            }
+                streakNotification: null,
+                won: false
+            },
+            wonNotificaiton: false
         }
         this.winScore = 100;
         this.loseScore = 0;
@@ -195,6 +198,19 @@ class Game {
 
             bb1.material.maxSimultaneousLights = 8;
             bb2.material.maxSimultaneousLights = 8;
+
+        };
+        meshTask = assetsManager.addMeshTask("task05", "", "assets/models/", "hb_logo.obj");
+        meshTask.onSuccess = function (task) {
+            task.loadedMeshes[0].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[2].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[2].rotation.y= Math.PI/2;
+            task.loadedMeshes[0].rotation.y= Math.PI;
+
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[2].material.maxSimultaneousLights = 8;
 
         };
         assetsManager.load();
@@ -597,6 +613,13 @@ class Game {
 
         this.updatePlayerScores();
 
+        let onFinishAnimation = () => {
+            this.soundMachine.clear();
+            // DON'T DELETE: delay scene disposal due to render issues
+            setTimeout( () => {setNewScene(end);}, 0);
+        };
+
+
         // game over
         if (this.playerStats.player1.score <= this.loseScore || this.playerStats.player2.score <= this.loseScore)
         {
@@ -606,11 +629,7 @@ class Game {
             if (this.playerStats.player2.score <= this.loseScore) msg += "Player 2 is a fool!! ";
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
-                () => {
-                    this.soundMachine.clear();
-                    // DON'T DELETE: delay scene disposal due to render issues
-                    setTimeout( () => {setNewScene(end);}, 0);
-                }
+                onFinishAnimation
             );
 
         }
@@ -653,6 +672,32 @@ class Game {
             this.playerStats.player2.streakNotification = null;
             this.showUserMessage("Player 2 has a streak! " + this.playerStats.player2.hitsInARow + " Bangs!");
         }
+
+        // Check if a player has won
+        if (!this.playerStats.wonNotificaiton && !this.playerStats.player1.won && !this.playerStats.player2.won) {
+            if (this.playerStats.player1.score >= 100) {
+                this.playerStats.player1.won = true;
+            }
+            if (this.playerStats.player2.score >= 100) {
+                this.playerStats.player2.won = true;
+            }
+        }
+        if (!this.playerStats.wonNotificaiton && (this.playerStats.player1.won || this.playerStats.player2.won)) {
+            let displayMessage = "";
+            if (this.playerStats.player1.won && !this.playerStats.player2.won) {
+                displayMessage = "Player 1 is the ROCKSTAR!";
+            } else if (!this.playerStats.player1.won && this.playerStats.player2.won) {
+                displayMessage = "Player 2 is the ROCKSTAR!";
+            } else {
+                displayMessage = "DRAW! Both players are ROCKSTARS!";
+            }
+            this.showUserMessage(displayMessage, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            end.playerOneScore = this.playerStats.player1.score;
+            end.playerTwoScore = this.playerStats.player2.score;
+            end.displayMessage = displayMessage;
+            this.playerStats.wonNotificaiton = true;
+        }
+
 
     }
 
