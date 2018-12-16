@@ -25,6 +25,23 @@ class TheEnd {
         this.addHUD();
         this.updatePlayerScores();
 
+        // Meshes on the stage:
+        let assetsManager = new BABYLON.AssetsManager(scene);
+        let meshTask = assetsManager.addMeshTask("task05", "", "assets/models/", "hb_logo.obj");
+        meshTask.onSuccess = function (task) {
+            task.loadedMeshes[0].position = new BABYLON.Vector3(0, 2, -4);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(0, 2, -4);
+            task.loadedMeshes[2].position = new BABYLON.Vector3(0, 2, -4);
+            task.loadedMeshes[2].rotation.y= Math.PI/2;
+            task.loadedMeshes[0].rotation.y= Math.PI;
+
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[2].material.maxSimultaneousLights = 8;
+
+        };
+        assetsManager.load();
+
         this.scene = scene;
     }
 
@@ -82,6 +99,7 @@ class TheEnd {
         centerMessage.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
         centerMessage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
         centerMessage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        centerMessage.paddingTop = "100px";
         this.centerMessageLabel = centerMessage;
         this.hud.addControl(centerMessage);
     }
