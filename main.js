@@ -42,6 +42,9 @@ function handleSceneKeys (event) {
         case "5":
             newScene = end;
             break;
+        case "Escape":
+            newScene = menu;
+            break;
         default:
             break;
     }
