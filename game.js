@@ -683,13 +683,18 @@ class Game {
             }
         }
         if (!this.playerStats.wonNotificaiton && (this.playerStats.player1.won || this.playerStats.player2.won)) {
+            let displayMessage = "";
             if (this.playerStats.player1.won && !this.playerStats.player2.won) {
-                this.showUserMessage("Player 1 is the ROCKSTAR!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+                displayMessage = "Player 1 is the ROCKSTAR!";
             } else if (!this.playerStats.player1.won && this.playerStats.player2.won) {
-                this.showUserMessage("Player 2 is the ROCKSTAR!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+                displayMessage = "Player 2 is the ROCKSTAR!";
             } else {
-                this.showUserMessage("DRAW! Both players are ROCKSTARS!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+                displayMessage = "DRAW! Both players are ROCKSTARS!";
             }
+            this.showUserMessage(displayMessage, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            end.playerOneScore = this.playerStats.player1.score;
+            end.playerTwoScore = this.playerStats.player2.score;
+            end.displayMessage = displayMessage;
             this.playerStats.wonNotificaiton = true;
         }
 
