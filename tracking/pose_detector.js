@@ -387,8 +387,9 @@ class PoseDetector {
                 }
             }
         }
-        
-        game.actionDetected(timestamp, actions);
+        if (game.soundMachine.isOnBeat(timestamp)) {
+            game.actionDetected(timestamp, actions);
+        }
 
     }
 
