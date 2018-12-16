@@ -14,7 +14,7 @@ class Menu {
         let scene = new BABYLON.Scene(engine);
 
         // Add a camera to the scene and attach it to the canvas
-        let camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 0, -5), scene);
+        let camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 0, -6), scene);
         camera.setTarget(BABYLON.Vector3.Zero());
         // camera.attachControl(canvas, true);
 
@@ -37,17 +37,31 @@ class Menu {
         let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "Play.obj");
         meshTask.onSuccess = function (task) {
             this.play = task.loadedMeshes[0];
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 1, 2);
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
         };
         meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "Credits.obj");
         meshTask.onSuccess = function (task) {
             this.credits = task.loadedMeshes[0];
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
         };
         meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "Instructions.obj");
         meshTask.onSuccess = function (task) {
             this.intro = task.loadedMeshes[0];
-            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
+            task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -2, 2);
+        };
+        meshTask = assetsManager.addMeshTask("task05", "", "assets/models/", "hb_logo.obj");
+        meshTask.onSuccess = function (task) {
+            task.loadedMeshes[0].position = new BABYLON.Vector3(0, 1.5, 2);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(0, 1.5, 2);
+            task.loadedMeshes[2].position = new BABYLON.Vector3(0, 1.5, 2);
+            //task.loadedMeshes[2].rotation.y= Math.PI/2;
+            //task.loadedMeshes[0].rotation.y= Math.PI;
+            task.loadedMeshes[1].rotation.y= Math.PI;
+
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[2].material.maxSimultaneousLights = 8;
+
         };
         assetsManager.load();
 
@@ -64,17 +78,17 @@ class Menu {
 
     render() {
         if (this.state == 0)
-            this.scene.meshes[0].position.z = 0;
+            this.scene.meshes[3].position.z = 0;
         else
-            this.scene.meshes[0].position.z = 2;
+            this.scene.meshes[3].position.z = 2;
         if (this.state == 1)
-            this.scene.meshes[1].position.z = 0;
+            this.scene.meshes[4].position.z = 0;
         else
-            this.scene.meshes[1].position.z = 2;
+            this.scene.meshes[4].position.z = 2;
         if (this.state == 2)
-            this.scene.meshes[2].position.z = 0;
+            this.scene.meshes[5].position.z = 0;
         else
-            this.scene.meshes[2].position.z = 2;
+            this.scene.meshes[5].position.z = 1.5;
         this.scene.render();
     }
 
