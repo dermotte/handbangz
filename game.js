@@ -54,15 +54,18 @@ class Game {
                 hitsInARow: 0,
                 onFire: false,
                 bangNotification: null,
-                streakNotification: null
+                streakNotification: null,
+                won: false
             },
             player2: {
                 score: 0,
                 hitsInARow: 0,
                 onFire: false,
                 bangNotification: null,
-                streakNotification: null
-            }
+                streakNotification: null,
+                won: false
+            },
+            wonNotificaiton: false
         }
         this.winScore = 100;
         this.loseScore = 0;
@@ -597,6 +600,13 @@ class Game {
 
         this.updatePlayerScores();
 
+        let onFinishAnimation = () => {
+            this.soundMachine.clear();
+            // DON'T DELETE: delay scene disposal due to render issues
+            setTimeout( () => {setNewScene(end);}, 0);
+        };
+
+
         // game over
         if (this.playerStats.player1.score <= this.loseScore || this.playerStats.player2.score <= this.loseScore)
         {
@@ -606,11 +616,7 @@ class Game {
             if (this.playerStats.player2.score <= this.loseScore) msg += "Player 2 is a fool!! ";
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
-                () => {
-                    this.soundMachine.clear();
-                    // DON'T DELETE: delay scene disposal due to render issues
-                    setTimeout( () => {setNewScene(end);}, 0);
-                }
+                onFinishAnimation
             );
 
         }
@@ -653,6 +659,27 @@ class Game {
             this.playerStats.player2.streakNotification = null;
             this.showUserMessage("Player 2 has a streak! " + this.playerStats.player2.hitsInARow + " Bangs!");
         }
+
+        // Check if a player has won
+        if (!this.playerStats.wonNotificaiton && !this.playerStats.player1.won && !this.playerStats.player2.won) {
+            if (this.playerStats.player1.score >= 100) {
+                this.playerStats.player1.won = true;
+            }
+            if (this.playerStats.player2.score >= 100) {
+                this.playerStats.player2.won = true;
+            }
+        }
+        if (!this.playerStats.wonNotificaiton && (this.playerStats.player1.won || this.playerStats.player2.won)) {
+            if (this.playerStats.player1.won && !this.playerStats.player2.won) {
+                this.showUserMessage("Player 1 is the ROCKSTAR!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            } else if (!this.playerStats.player1.won && this.playerStats.player2.won) {
+                this.showUserMessage("Player 2 is the ROCKSTAR!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            } else {
+                this.showUserMessage("DRAW! Both players are ROCKSTARS!", BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            }
+            this.playerStats.wonNotificaiton = true;
+        }
+
 
     }
 
