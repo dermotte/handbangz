@@ -2,6 +2,7 @@ class SoundMachine {
     constructor() {
         this.tempo = 120;
         this.beattime = 60000/this.tempo;
+        this.bartime = this.beattime * 4;
         this.tolerance = 200;
 
         this.songBaseUrl = "assets/music/songs/";
@@ -122,6 +123,14 @@ class SoundMachine {
         }
         let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
+    }
+    
+    isOnBar(time) {
+        if (!this.curSong) {
+            return false;
+        }
+        let timeOffset = time % this.bartime;
+        return timeOffset <= this.tolerance / 2 || timeOffset >= this.bartime - this.tolerance / 2;
     }
 
     clear(){

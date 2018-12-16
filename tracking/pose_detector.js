@@ -291,6 +291,8 @@ class PoseDetector {
             keypointMap[keypoints[i].part] = keypoints[i];
         }
 
+        let actions = [];
+
         let nose = keypointMap["nose"];
         let rightWrist = keypointMap["rightWrist"];
         let leftWrist = keypointMap["leftWrist"];
@@ -311,11 +313,11 @@ class PoseDetector {
                 let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
 
                 if (y_cur < y_1 && y_1 < y_2) {
-                    game.actionDetected(timestamp, "banged DOWN");
+                    actions.push("bang");
                 } else if (y_cur > y_1 && y_1 > y_2) {
-                    game.actionDetected(timestamp, "banged UP");
+                    actions.push("bang");
                 } else {
-                    game.actionDetected(timestamp, "FAIL");
+//                    game.actionDetected(timestamp, "fail");
 //                        console.log("WTFog");
                 }
 
@@ -324,13 +326,15 @@ class PoseDetector {
             }
 //        }
 
-        if (rightWrist.position.y < rightShoulder.position.y &&
-                leftWrist.position.y < leftShoulder.position.y) {
-            console.log("Both Hands up");
-        } else if (rightWrist.position.y < rightShoulder.position.y) {
-            console.log("Right Hand up")
-        } else if (leftWrist.position.y < leftShoulder.position.y) {
-            console.log("Left Hand up")
+        if (game.soundMachine.isOnBar(timestamp)) {
+            if (rightWrist.position.y < rightShoulder.position.y &&
+                    leftWrist.position.y < leftShoulder.position.y) {
+                actions.push("dHorn");
+            } else if (rightWrist.position.y < rightShoulder.position.y) {
+                actions.push("horn");
+            } else if (leftWrist.position.y < leftShoulder.position.y) {
+                actions.push("horn");
+            }
         }
 
 
@@ -350,9 +354,9 @@ class PoseDetector {
 
                 if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
                     if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
-                        console.log("lighted left");
+                        actions.push("light");
                     } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
-                        console.log("lighted right");
+                        actions.push("light");
                     } else {
 //                        console.log("WTFog");
                     }
@@ -374,15 +378,17 @@ class PoseDetector {
 
                 if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
                     if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
-                        console.log("lighted left");
+                        actions.push("light");
                     } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
-                        console.log("lighted right");
+                        actions.push("light");
                     } else {
 //                        console.log("WTFog");
                     }
                 }
             }
         }
+        
+        game.actionDetected(timestamp, actions);
 
     }
 
