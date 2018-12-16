@@ -53,13 +53,15 @@ class Game {
                 score: 0,
                 hitsInARow: 0,
                 onFire: false,
-                bangNotification: null
+                bangNotification: null,
+                streakNotification: null
             },
             player2: {
                 score: 0,
                 hitsInARow: 0,
                 onFire: false,
-                bangNotification: null
+                bangNotification: null,
+                streakNotification: null
             }
         }
         this.winScore = 100;
@@ -501,6 +503,14 @@ class Game {
         if (action != "FAIL") {
             this.playerStats.player1.score++;
             this.playerStats.player1.hitsInARow++;
+
+            // Check if streak is 5, 10 or 20
+            if (this.playerStats.player1.hitsInARow == 5 ||
+                this.playerStats.player1.hitsInARow == 10 ||
+                this.playerStats.player1.hitsInARow == 20) {
+                this.playerStats.player1.score += 10;
+                this.playerStats.player1.streakNotification = true;
+            }
             this.playerStats.player1.bangNotification = "CORRECT";
         } else {
 //            console.log("SHIT");
@@ -541,8 +551,12 @@ class Game {
         // this.playerStats.player2.score = score;
     }
 
+    addToStreak(score) {
+        this.playerStats.player1.hitsInARow += score;
+    }
+
     notifyBang(player, corrrect) {
-        console.log("Bang notification for player " + player + " is " + corrrect);
+        //console.log("Bang notification for player " + player + " is " + corrrect);
         let eye = player == 1 ? this.leftEye : this.rightEye;
 
         let color = corrrect ? new BABYLON.Color3(0.22, 0.73, 0.1) : new BABYLON.Color3(0.64, 0.17, 0.05);
@@ -628,6 +642,16 @@ class Game {
         if (this.playerStats.player1.bangNotification != null) {
             this.notifyBang(2, this.playerStats.player2.bangNotification == "CORRECT");
             this.playerStats.player2.bangNotification = null;
+        }
+
+        // Notifications about streaks
+        if (this.playerStats.player1.streakNotification != null) {
+            this.playerStats.player1.streakNotification = null;
+            this.showUserMessage("Player 1 has a streak! " + this.playerStats.player1.hitsInARow + " Bangs!");
+        }
+        if (this.playerStats.player2.streakNotification != null) {
+            this.playerStats.player2.streakNotification = null;
+            this.showUserMessage("Player 2 has a streak! " + this.playerStats.player2.hitsInARow + " Bangs!");
         }
 
     }
