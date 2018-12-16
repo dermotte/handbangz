@@ -531,7 +531,7 @@ class Game {
             let msg = "";
             console.log("fool");
             if (this.playerStats.player1.score <= this.loseScore) msg += "Player 1 is a fool!! ";
-            if (this.playerStats.player1.score <= this.loseScore) msg += "Player 2 is a fool!! ";
+            if (this.playerStats.player2.score <= this.loseScore) msg += "Player 2 is a fool!! ";
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
                 () => {
