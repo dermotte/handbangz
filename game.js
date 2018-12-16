@@ -67,7 +67,7 @@ class Game {
             },
             wonNotificaiton: false
         }
-        this.winScore = 100;
+        this.winScore = 200;
         this.loseScore = 0;
         this.fireWorkScore = 80;
         this.lastHeadUp = new Date().getTime();
@@ -711,10 +711,10 @@ class Game {
 
         // Check if a player has won
         if (!this.playerStats.wonNotificaiton && !this.playerStats.player1.won && !this.playerStats.player2.won) {
-            if (this.playerStats.player1.score >= 100) {
+            if (this.playerStats.player1.score >= this.winScore) {
                 this.playerStats.player1.won = true;
             }
-            if (this.playerStats.player2.score >= 100) {
+            if (this.playerStats.player2.score >= this.winScore) {
                 this.playerStats.player2.won = true;
             }
         }

@@ -326,7 +326,8 @@ class PoseDetector {
             }
 //        }
 
-        if (game.soundMachine.isOnBar(timestamp)) {
+//        if (game.soundMachine.isOnBar(timestamp)) {
+        if (game.soundMachine.isOnBeat(timestamp)) {
             if (rightWrist.position.y < rightShoulder.position.y &&
                     leftWrist.position.y < leftShoulder.position.y) {
                 actions.push("dHorn");
