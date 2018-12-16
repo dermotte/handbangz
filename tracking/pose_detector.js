@@ -77,10 +77,125 @@ class PoseDetector {
         }
 
         if (this.debug) {
-            this.detectPoses();
+
+            this.initGameAndCountPlayer();
+            //this.detectPoses();
         }
     }
 
+    initGameAndCountPlayer(){
+        console.log("Init game and count player ...")
+
+        const canvas = document.getElementById('output');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = this.videoWidth;
+        canvas.height = this.videoHeight;
+
+        if (this.poseInterval) {
+            clearInterval(this.poseInterval);
+        }
+
+        let intervalCnt = 0;
+
+        this.poseInterval = setInterval(async () => {
+            this.intervalCounter = this.intervalCounter + 1;
+            this.countPlayers(ctx);
+
+            intervalCnt++;
+            if(intervalCnt === 20){
+                clearInterval(this.poseInterval)
+
+                console.log("detected players: " + this.playerOne)
+                console.log("detected players: " + this.playerTwo)
+            }
+
+
+        }, this.samplerate);
+    }
+
+    async countPlayers(ctx) {
+        console.log("Shake your hands ...")
+
+        let poses = [];
+        poses = await this.net.estimateMultiplePoses(
+            this.video, 0.5, this.flipHorizontal, this.outputStride,
+            this.maxPoseDetections, this.minPartConfidence, this.nmsRadius);
+
+
+        let playerCnt = 0;
+        let nosePosX = 0;
+        let nosePosY = 0;
+        let displayWidth = this.videoWidth;
+        let tmpWindow = displayWidth / 3.0;
+
+        for(let iPos = 0; iPos < poses.length; iPos++){
+
+            let keypointMap = {};
+            for (let i = 0; i < poses[iPos].keypoints.length; i++) {
+                keypointMap[poses[iPos].keypoints[i].part] = poses[iPos].keypoints[i];
+            }
+
+            nosePosX = keypointMap["nose"].position.x;
+            nosePosY = keypointMap["nose"].position.y;
+
+            if(nosePosX >= (tmpWindow) && nosePosX <= (tmpWindow * 2.0)){
+                console.log("One player in the middle")
+                if(this.playerOne === null)
+                    this.playerOne = new Player("player1")
+            }else if(nosePosX <= (displayWidth / 2.0)){
+                console.log("player left")
+                if(this.playerOne === null)
+                    this.playerOne = new Player("player1")
+            }else if(nosePosX >= (displayWidth / 2.0)){
+                console.log("player right")
+                if(this.playerTwo === null)
+                    this.playerTwo = new Player("player2")
+            }
+        }
+
+    }
+
+    // is called every 250ms
+    async poseDetection(ctx) {
+
+        let timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
+
+        let poses = [];
+        poses = await this.net.estimateMultiplePoses(
+            this.video, 0.5, this.flipHorizontal, this.outputStride,
+            this.maxPoseDetections, this.minPartConfidence, this.nmsRadius);
+
+        if (this.debug) {
+            ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
+
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.translate(-this.videoWidth, 0);
+            ctx.drawImage(this.video, 0, 0, this.videoWidth, this.videoHeight);
+            ctx.restore();
+        }
+        //@Todo map player to position
+
+        //There is at least one person
+        if (poses.length >= 1) {
+            if (this.playerOne == null)
+                this.playerOne = new Player("player1");
+            //console.log("score:" + poses[0].score + "; confidence: " + detector.minPoseConfidence)
+
+            if (poses[0].score >= this.minPoseConfidence) {
+                if(!this.debug){
+                    this.recognizePose(poses[0].keypoints, this.minPartConfidence, this.playerOne, timestamp)
+                }else{
+                    this.drawKeypoints(poses[0].keypoints, this.minPartConfidence, ctx);
+                    this.drawSkeleton(poses[0].keypoints, this.minPartConfidence, ctx);
+                    this.testRecognizeMultiplePoses(poses[0].keypoints, this.minPartConfidence, this.playerOne)
+                }
+            }
+
+        }
+
+    }
 
     detectPoses() {
         console.log("Detect poses ...")
@@ -90,178 +205,21 @@ class PoseDetector {
         canvas.width = this.videoWidth;
         canvas.height = this.videoHeight;
 
-        // is called every 250ms
-        async function poseDetection(detector) {
-
-            let timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
-
-            let poses = [];
-            poses = await detector.net.estimateMultiplePoses(
-                    detector.video, 0.5, detector.flipHorizontal, detector.outputStride,
-                    detector.maxPoseDetections, detector.minPartConfidence, detector.nmsRadius);
-
-            if (detector.debug) {
-                ctx.clearRect(0, 0, detector.videoWidth, detector.videoHeight);
-
-                ctx.save();
-                ctx.scale(-1, 1);
-                ctx.translate(-detector.videoWidth, 0);
-                ctx.drawImage(detector.video, 0, 0, detector.videoWidth, detector.videoHeight);
-                ctx.restore();
-            }
-            //@Todo map player to position
-
-            //There is at least one person
-            if (poses.length >= 1) {
-                if (detector.playerOne == null)
-                    detector.playerOne = new Player("player1");
-                //console.log("score:" + poses[0].score + "; confidence: " + detector.minPoseConfidence)
-
-                if (poses[0].score >= detector.minPoseConfidence) {
-                    if(!detector.debug){
-                        detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne, timestamp)
-                    }else{
-                        detector.drawKeypoints(poses[0].keypoints, detector.minPartConfidence, ctx);
-                        detector.drawSkeleton(poses[0].keypoints, detector.minPartConfidence, ctx);
-                        detector.testRecognizeMultiplePoses(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
-                    }
-                }
-
-            }
-
-        }
-
-        this.timestamp;
+        this.timestamp = 0;
         if (this.poseInterval) {
             clearInterval(this.poseInterval);
         }
 
-        poseDetection(this);
-
         this.poseInterval = setInterval(async () => {
-
-//
-//            console.log("POSE");
-
-//            let ts = new Date().getTime();
-//            let time = ts - this.timestamp;
-//            this.timestamp = ts;
-//            console.log(time);
-
-//            this.audioElement.play();
-            if (this.intervalCounter % 2 == 0) {
-//                console.log("Head");
-//            document.getElementById("arrow")
-//fas fa-arrow-down
-            } else {
-//                console.log("NOT Head")
-            }
             this.intervalCounter = this.intervalCounter + 1;
-            poseDetection(this);
+            this.poseDetection(ctx);
 
         }, this.samplerate);
 
     }
 
     testRecognizeMultiplePoses(keypoints, minConfidence, player){
-
-        let keypointMap = {};
-        for (let i = 0; i < keypoints.length; i++) {
-            keypointMap[keypoints[i].part] = keypoints[i];
-        }
-
-        let nose = keypointMap["nose"];
-        let rightWrist = keypointMap["rightWrist"];
-        let leftWrist = keypointMap["leftWrist"];
-        let rightShoulder = keypointMap["rightShoulder"];
-        let leftShoulder = keypointMap["leftShoulder"];
-
-        if (nose.score > minConfidence) {
-            let currentPoint = [nose.position.x, nose.position.y];
-            player.nosePositions.push(currentPoint);
-
-            x.innerHTML = nose.position.x.toFixed(4);
-            y.innerHTML = nose.position.y.toFixed(4);
-
-            if (player.nosePositions.length > 2) {
-
-                let y_cur = Math.round(currentPoint[1]);
-                let y_1 = Math.round(player.nosePositions[player.nosePositions.length - 2][1]);
-                let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
-
-                if (y_cur < y_1 && y_1 < y_2) {
-                    console.log("banged DOWN");
-                } else if (y_cur > y_1 && y_1 > y_2) {
-                    console.log("banged UP");
-                } else {
-                    console.log("FAIL");
-//                        console.log("WTFog");
-                }
-
-                player.nosePositions = [];
-                player.nosePositions.push([nose.position.x, nose.position.y]);
-            }
-        }
-
-        if (rightWrist.position.y < rightShoulder.position.y &&
-            leftWrist.position.y < leftShoulder.position.y) {
-            console.log("Both Hands up");
-        } else if (rightWrist.position.y < rightShoulder.position.y) {
-            console.log("Right Hand up")
-        } else if (leftWrist.position.y < leftShoulder.position.y) {
-            console.log("Left Hand up")
-        }
-
-
-        let shoulderSpan = Math.abs(leftShoulder.position.x - rightShoulder.position.x);
-        // lighter
-        if (rightWrist.position.y < rightShoulder.position.y && rightWrist.score > minConfidence) {
-            let currentPoint = [rightWrist.position.x, rightWrist.position.y];
-            player.rightWristPositions.push(currentPoint);
-
-            if (player.rightWristPositions.length > 4) {
-
-                let x_cur = Math.round(currentPoint[0]);
-                let x_1 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 2][0]);
-                let x_2 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 3][0]);
-                let x_3 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 4][0]);
-                let x_4 = Math.round(player.rightWristPositions[player.rightWristPositions.length - 5][0]);
-
-                if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
-                    if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
-                        console.log("lighted left");
-                    } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
-                        console.log("lighted right");
-                    } else {
-//                        console.log("WTFog");
-                    }
-                }
-            }
-        }
-
-        if (leftWrist.position.y < leftShoulder.position.y && leftWrist.score > minConfidence) {
-            let currentPoint = [leftWrist.position.x, leftWrist.position.y];
-            player.leftWristPositions.push(currentPoint);
-
-            if (player.leftWristPositions.length > 4) {
-
-                let x_cur = Math.round(currentPoint[0]);
-                let x_1 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 2][0]);
-                let x_2 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 3][0]);
-                let x_3 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 4][0]);
-                let x_4 = Math.round(player.leftWristPositions[player.leftWristPositions.length - 5][0]);
-
-                if (Math.abs(x_4 - x_cur) >= shoulderSpan) {
-                    if (x_cur < x_1 && x_1 < x_2 && x_2 < x_3 && x_3 < x_4) {
-                        console.log("lighted left");
-                    } else if (x_cur > x_1 && x_1 > x_2 && x_2 > x_3 && x_3 > x_4) {
-                        console.log("lighted right");
-                    } else {
-//                        console.log("WTFog");
-                    }
-                }
-            }
-        }
+        console.log("Muliple pose detection started ...")
     }
 
     recognizePose(keypoints, minConfidence, player, timestamp) {

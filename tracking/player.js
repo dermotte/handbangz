@@ -6,6 +6,7 @@ class Player {
         this.rightWristPositions = [];
         this.leftWristPositions = [];
 //        this.state = "DOWN"
+        this.position = [];
     }
 
 }
