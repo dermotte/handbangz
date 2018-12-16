@@ -593,6 +593,7 @@ class Game {
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
                 () => {
+                    this.soundMachine.clear();
                     // DON'T DELETE: delay scene disposal due to render issues
                     setTimeout( () => {setNewScene(end);}, 0);
                 }

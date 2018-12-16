@@ -18,6 +18,7 @@ class SoundMachine {
         this.startTimestamp;
         this.curSong;
         this.countIn = null;
+        this.beatInterval = null;
     }
 
     // type = "slow", "fast", "silent"
@@ -89,6 +90,12 @@ class SoundMachine {
         curSong.play();
 //        console.log("part duration: " + (new Date().getTime() - this.startTimestamp));
         this.startTimestamp = new Date().getTime();
+        console.log("Sound Beat: " + this.startTimestamp); // first beats
+        this.beatInterval = setInterval(() =>
+            {
+            let time = new Date().getTime() - this.startTimestamp;
+            console.log("Sound Beat: " + time);
+        }, this.beattime);
         this.curSong = curSong;
         if (game) {
             game.startLightSwitching();
@@ -108,6 +115,10 @@ class SoundMachine {
         let time = new Date().getTime() - this.startTimestamp;
         let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
+    }
+
+    clear(){
+        clearInterval(this.beatInterval);
     }
 
     startLoop(scene) {
