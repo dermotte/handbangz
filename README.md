@@ -70,9 +70,9 @@ In the typical Hard Rock style of the 90s HeadBangZ ( -> John)
 Tanja Heideman - Master of Puppets
 John NA Brown - Chrome & Blades
 Philipp Moll - Stage Diver
-Sabrina Kletz - 
-Andi Leibetseder - 
-Bernd Münzer - 
-Mathias Lux - 
+Sabrina Kletz - Pirate Programmer
+Andi Leibetseder - Eating Guitars for Breakfast
+Bernd Münzer - Rhythmist & Bassist
+Mathias Lux - The Man
 Armin Lippitz - Hard Rock Consulting Inc.
 Georg Wieser - VERT pUSHER

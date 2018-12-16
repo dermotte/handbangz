@@ -200,6 +200,19 @@ class Game {
             bb2.material.maxSimultaneousLights = 8;
 
         };
+        meshTask = assetsManager.addMeshTask("task05", "", "assets/models/", "hb_logo.obj");
+        meshTask.onSuccess = function (task) {
+            task.loadedMeshes[0].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[1].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[2].position = new BABYLON.Vector3(0, 8, 2);
+            task.loadedMeshes[2].rotation.y= Math.PI/2;
+            task.loadedMeshes[0].rotation.y= Math.PI;
+
+            task.loadedMeshes[0].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[1].material.maxSimultaneousLights = 8;
+            task.loadedMeshes[2].material.maxSimultaneousLights = 8;
+
+        };
         assetsManager.load();
 
 
