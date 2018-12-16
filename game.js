@@ -536,7 +536,7 @@ class Game {
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
                 () => {
                     // DON'T DELETE: delay scene disposal due to render issues
-                    setTimeout( () => {setNewScene(end);}, 10);
+                    setTimeout( () => {setNewScene(end);}, 0);
                 }
             );
 
