@@ -627,6 +627,9 @@ class Game {
             console.log("fool");
             if (this.playerStats.player1.score <= this.loseScore) msg += "Player 1 is a fool!! ";
             if (this.playerStats.player2.score <= this.loseScore) msg += "Player 2 is a fool!! ";
+            end.playerOneScore = this.playerStats.player1.score;
+            end.playerTwoScore = this.playerStats.player2.score;
+            end.displayMessage = msg;
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
                 onFinishAnimation
