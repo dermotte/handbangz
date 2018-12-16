@@ -154,6 +154,16 @@ class PoseDetector {
             }
         }
 
+        if (this.debug) {
+            ctx.clearRect(0, 0, this.videoWidth, this.videoHeight);
+
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.translate(-this.videoWidth, 0);
+            ctx.drawImage(this.video, 0, 0, this.videoWidth, this.videoHeight);
+            ctx.restore();
+        }
+
     }
 
     // is called every 250ms
@@ -225,7 +235,7 @@ class PoseDetector {
     recognizePose(keypoints, minConfidence, player, timestamp) {
 
 //        console.log(timestamp % 250);
-    
+
         let keypointMap = {};
         for (let i = 0; i < keypoints.length; i++) {
             keypointMap[keypoints[i].part] = keypoints[i];
@@ -238,34 +248,34 @@ class PoseDetector {
         let leftShoulder = keypointMap["leftShoulder"];
 
 //        if (nose.score > minConfidence) {
-            let currentPoint = [nose.position.x, nose.position.y];
-            player.nosePositions.push(currentPoint);
+        let currentPoint = [nose.position.x, nose.position.y];
+        player.nosePositions.push(currentPoint);
 
-            x.innerHTML = nose.position.x.toFixed(4);
-            y.innerHTML = nose.position.y.toFixed(4);
+        x.innerHTML = nose.position.x.toFixed(4);
+        y.innerHTML = nose.position.y.toFixed(4);
 
-            if (player.nosePositions.length > 2) {
+        if (player.nosePositions.length > 2) {
 
-                let y_cur = Math.round(currentPoint[1]);
-                let y_1 = Math.round(player.nosePositions[player.nosePositions.length - 2][1]);
-                let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
+            let y_cur = Math.round(currentPoint[1]);
+            let y_1 = Math.round(player.nosePositions[player.nosePositions.length - 2][1]);
+            let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
 
-                if (y_cur < y_1 && y_1 < y_2) {
-                    game.actionDetected(timestamp, "banged DOWN");
-                } else if (y_cur > y_1 && y_1 > y_2) {
-                    game.actionDetected(timestamp, "banged UP");
-                } else {
-                    game.actionDetected(timestamp, "FAIL");
+            if (y_cur < y_1 && y_1 < y_2) {
+                game.actionDetected(timestamp, "banged DOWN");
+            } else if (y_cur > y_1 && y_1 > y_2) {
+                game.actionDetected(timestamp, "banged UP");
+            } else {
+                game.actionDetected(timestamp, "FAIL");
 //                        console.log("WTFog");
-                }
-
-                player.nosePositions = [];
-                player.nosePositions.push([nose.position.x, nose.position.y]);
             }
+
+            player.nosePositions = [];
+            player.nosePositions.push([nose.position.x, nose.position.y]);
+        }
 //        }
 
         if (rightWrist.position.y < rightShoulder.position.y &&
-                leftWrist.position.y < leftShoulder.position.y) {
+            leftWrist.position.y < leftShoulder.position.y) {
             console.log("Both Hands up");
         } else if (rightWrist.position.y < rightShoulder.position.y) {
             console.log("Right Hand up")
@@ -354,7 +364,7 @@ class PoseDetector {
 //                        if(y_cur === y_prev)
 //                            //console.log("Listening ...", y_prev, y_cur);
 //                            continue;
-//                         
+//
 //                        if (player.state === "DOWN") {
 //                            if (y_cur >= y_prev) {
 //                                direction_changed = true;
@@ -370,7 +380,7 @@ class PoseDetector {
 //                            }
 //                        }
 //                    }
-//                    
+//
 ////                    if (!direction_changed && player.state == "DOWN") {
 ////                        player.state = "UP";
 ////                        console.log("UP");
@@ -407,7 +417,7 @@ class PoseDetector {
             ctx.arc(x * scale, y * scale, 3, 0, 2 * Math.PI);
 
             ctx.fill();
-    }
+        }
     }
 
     /**
@@ -415,11 +425,11 @@ class PoseDetector {
      */
     drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
         const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-                keypoints, minConfidence);
+            keypoints, minConfidence);
 
         adjacentKeyPoints.forEach((keypoints) => {
             this.drawSegment(this.toTuple(keypoints[0].position),
-                    this.toTuple(keypoints[1].position), this.color, scale, ctx);
+                this.toTuple(keypoints[1].position), this.color, scale, ctx);
         });
     }
 
