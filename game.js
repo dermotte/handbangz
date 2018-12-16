@@ -366,22 +366,6 @@ class Game {
         playerOneScore.paddingTop = "50px";
         this.playerOneScoreLabel = playerOneScore;
         this.hud.addControl(playerOneScore);
-
-        var gameMode = new BABYLON.GUI.TextBlock("gameMode");
-        gameMode.text = "";
-        gameMode.fontSize = 50;
-        gameMode.color = '#A5400C';
-        gameMode.fontFamily = 'New Rocker';
-        gameMode.shadowBlur = 3;
-        gameMode.shadowColor = "#000";
-        gameMode.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
-        gameMode.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
-        gameMode.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-        gameMode.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        gameMode.paddingLeft = "50px";
-        gameMode.paddingBottom = "30px";
-        this.gameMode = gameMode;
-        this.hud.addControl(gameMode);
     }
 
     showUserMessage(msg, location = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation = null) {
@@ -540,32 +524,37 @@ class Game {
     actionDetected(timestamp, action) {
         console.log("action: " + action + ", timestamp: " + timestamp);
 
-        if (action != "FAIL") {
-            this.playerStats.player1.score++;
-            this.playerStats.player1.hitsInARow++;
+        let points = -1;
 
-            // Check if streak is 5, 10 or 20
-            if (this.playerStats.player1.hitsInARow == 5 ||
-                this.playerStats.player1.hitsInARow == 10 ||
-                this.playerStats.player1.hitsInARow == 20) {
-                this.playerStats.player1.score += 10;
-                this.playerStats.player1.streakNotification = true;
-            }
-            this.playerStats.player1.bangNotification = "CORRECT";
-        } else {
-//            console.log("SHIT");
-            this.playerStats.player1.score--;
+        if (action.length < 1) {
             this.playerStats.player1.hitsInARow = 0;
             this.playerStats.player1.bangNotification = "INCORRECT";
         }
+        else {
+            // check if one is correct
+            let correctCount = 0;
+            for (let key of action) {
+                for (let key2 of this.currentModes) {
+                    if (this.modes[key] === key2) correctCount++;
+                }
+            }
+            points += correctCount;
 
-//        if (this.soundMachine.isOnBeat()) {
-////            console.log("HIT");
-//            this.setPlayerOneScore(++this.playerStats.player1.score);
-//        } else {
-////            console.log("SHIT");
-//            this.setPlayerOneScore(--this.playerStats.player1.score);
-//        }
+            if (correctCount > 0) {
+                this.playerStats.player1.hitsInARow++;
+
+                // Check if streak is 5, 10 or 20
+                if (this.playerStats.player1.hitsInARow == 5 ||
+                    this.playerStats.player1.hitsInARow == 10 ||
+                    this.playerStats.player1.hitsInARow == 20) {
+                    this.playerStats.player1.score += 10;
+                    this.playerStats.player1.streakNotification = true;
+                }
+                this.playerStats.player1.bangNotification = "CORRECT";
+            }
+        }
+
+        this.playerStats.player1.score += points;
 
     }
 

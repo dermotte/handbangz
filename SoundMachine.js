@@ -105,7 +105,7 @@ class SoundMachine {
             for (let i=1; i< curModes.length; i++) msg += " & " + curModes[i];
             msg += "!!";
             game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
-            game.gameMode.text = msg;
+            if (game.gameMode) game.gameMode.text = msg;
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
@@ -115,7 +115,7 @@ class SoundMachine {
 
     getCurrentTime() {
         return new Date().getTime() - this.startTimestamp;
-    } 
+    }
 
 
     isOnBeat(time) {
@@ -125,7 +125,7 @@ class SoundMachine {
         let timeOffset = time % this.beattime;
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
     }
-    
+
     isOnBar(time) {
         if (!this.curSong) {
             return false;
