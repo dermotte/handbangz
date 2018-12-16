@@ -471,8 +471,8 @@ class Game {
 
     }
 
-    actionDetected(action) {
-//        console.log("action: " + action);
+    actionDetected(timestamp, action) {
+        console.log("action: " + action + ", timestamp: " + timestamp);
 
         if (action != "FAIL") {
             this.playerStats.player1.score++;
@@ -523,6 +523,7 @@ class Game {
 
         if (this.gameOver) return;
 
+        this.soundMachine.render();
         this.updatePlayerScores();
 
         // game over

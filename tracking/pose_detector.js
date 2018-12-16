@@ -90,7 +90,10 @@ class PoseDetector {
         canvas.width = this.videoWidth;
         canvas.height = this.videoHeight;
 
+        // is called every 250ms
         async function poseDetection(detector) {
+
+            let timestamp = new Date().getTime() - game.soundMachine.startTimestamp;
 
             let poses = [];
             poses = await detector.net.estimateMultiplePoses(
@@ -116,7 +119,7 @@ class PoseDetector {
 
                 if (poses[0].score >= detector.minPoseConfidence) {
                     if(!detector.debug){
-                        detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne)
+                        detector.recognizePose(poses[0].keypoints, detector.minPartConfidence, detector.playerOne, timestamp)
                     }else{
                         detector.drawKeypoints(poses[0].keypoints, detector.minPartConfidence, ctx);
                         detector.drawSkeleton(poses[0].keypoints, detector.minPartConfidence, ctx);
@@ -154,7 +157,7 @@ class PoseDetector {
 //                console.log("NOT Head")
             }
             this.intervalCounter = this.intervalCounter + 1;
-            await poseDetection(this);
+            poseDetection(this);
 
         }, this.samplerate);
 
@@ -261,8 +264,10 @@ class PoseDetector {
         }
     }
 
-    recognizePose(keypoints, minConfidence, player) {
+    recognizePose(keypoints, minConfidence, player, timestamp) {
 
+//        console.log(timestamp % 250);
+    
         let keypointMap = {};
         for (let i = 0; i < keypoints.length; i++) {
             keypointMap[keypoints[i].part] = keypoints[i];
@@ -274,7 +279,7 @@ class PoseDetector {
         let rightShoulder = keypointMap["rightShoulder"];
         let leftShoulder = keypointMap["leftShoulder"];
 
-        if (nose.score > minConfidence) {
+//        if (nose.score > minConfidence) {
             let currentPoint = [nose.position.x, nose.position.y];
             player.nosePositions.push(currentPoint);
 
@@ -288,18 +293,18 @@ class PoseDetector {
                 let y_2 = Math.round(player.nosePositions[player.nosePositions.length - 3][1]);
 
                 if (y_cur < y_1 && y_1 < y_2) {
-                    game.actionDetected("banged DOWN");
+                    game.actionDetected(timestamp, "banged DOWN");
                 } else if (y_cur > y_1 && y_1 > y_2) {
-                    game.actionDetected("banged UP");
+                    game.actionDetected(timestamp, "banged UP");
                 } else {
-                    game.actionDetected("FAIL");
+                    game.actionDetected(timestamp, "FAIL");
 //                        console.log("WTFog");
                 }
 
                 player.nosePositions = [];
                 player.nosePositions.push([nose.position.x, nose.position.y]);
             }
-        }
+//        }
 
         if (rightWrist.position.y < rightShoulder.position.y &&
                 leftWrist.position.y < leftShoulder.position.y) {
