@@ -6,6 +6,7 @@ var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
 
 let intro = new Intro();
 let instructions = new Instructions();
+let credits = new Credits();
 let menu = new Menu();
 let game = new Game();
 let end = new TheEnd();
@@ -111,11 +112,12 @@ function handleActionKeys (event) {
                 let newScene = null;
                 if (menu.state == 0) {
                     newScene = game;
-                } else if (menu.state = 1) {
+                } else if (menu.state == 1) {
+                    newScene = credits;
+                } else if (menu.state == 2) {
                     newScene = instructions;
-                } else if (menu.state == 2)
-                    newScene = instructions;
-                setNewScene(newScene)
+                }
+                setNewScene(newScene);
                 break;
             default:
                 break;
