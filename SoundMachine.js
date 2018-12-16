@@ -10,11 +10,13 @@ class SoundMachine {
             fast: ["Headbangz_song1_toms.mp3"],
             silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
         };
+
         this.messages = {
             slow:  "Bang!!",
             fast: "Double Bang!!",
             silent: "Show me the light!!"
         }
+
         this.startTimestamp;
         this.curSong;
         this.countIn = null;
@@ -98,9 +100,13 @@ class SoundMachine {
         }, this.beattime);
         this.curSong = curSong;
         if (game) {
-            game.startLightSwitching();
-            game.showUserMessage(this.getUserMessageForSong(curSong.songUrl), BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
             game.poseDetector.detectPoses();
+            game.startLightSwitching();
+            let curModes = game.switchModes(curSong.songUrl);
+            let msg = curModes[0];
+            for (let i=1; i< curModes.length; i++) msg += " & " + curModes[i];
+            msg += "!!";
+            game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
         }
         // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
         // let nextSong = this.getRandomPart();
