@@ -145,7 +145,7 @@ class PoseDetector {
                     this.playerOne = new Player("player1")
                     this.playerOne.addNosePosition(nosePosX)
                 }
-                continue;
+                break;
 
             }else if(nosePosX <= (displayWidth / 2.0)){
                 console.log("player left")
@@ -196,6 +196,10 @@ class PoseDetector {
             ctx.restore();
         }
         //@Todo map player to position
+
+        for(let iPos = 0; iPos < poses.length; iPos++){
+
+        }
 
         //There is at least one person
         if (poses.length >= 1) {
