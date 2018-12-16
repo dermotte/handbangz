@@ -481,4 +481,8 @@ class PoseDetector {
         return [y, x];
     }
 
+    clear() {
+        clearInterval(this.poseInterval);
+    }
+
 }

@@ -658,6 +658,8 @@ class Game {
 
     dispose() {
         clearInterval(this.flashlightInterval);
+        this.soundMachine.clear();
+        this.poseDetector.clear();
         this.scene.dispose();
     }
 
