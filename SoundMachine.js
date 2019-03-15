@@ -12,52 +12,45 @@ class SoundMachine {
             silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
         };
 
-        this.messages = {
-            slow:  "Bang!!",
-            fast: "Double Bang!!",
-            silent: "Show me the light!!"
-        }
-
         this.startTimestamp;
         this.curSong;
         this.countIn = null;
-        this.beatInterval = null;
     }
 
-    // type = "slow", "fast", "silent"
+    /**
+     * Get a random song part from "slow", "fast" or "silent".
+     * @param type "slow", "fast" or "silent"
+     * @returns {string}
+     */
     getSpecificPart(type) {
         let songPart = this.songParts[""+type];
         return this.songBaseUrl + songPart[this.generateRandomInteger(songPart.length)];
     }
 
-
+    /**
+     * Get a random song part out of all song parts.
+     * @returns {string}
+     */
     getRandomPart() {
-        let one = this.songParts.slow;
-        let two = one.concat(this.songParts.fast);
-        let three = two.concat(this.songParts.silent);
-        return this.songBaseUrl + three[this.generateRandomInteger(three.length)];
+        var allSongs = this.songParts.slow;
+        allSongs = allSongs.concat(this.songParts.fast);
+        allSongs = allSongs.concat(this.songParts.silent);
+        return this.songBaseUrl + allSongs[this.generateRandomInteger(allSongs.length)];
     }
 
     generateRandomInteger(max_value) {
         return Math.floor(Math.random() * max_value);
     }
 
-    getUserMessageForSong(song) {
-
-        let ret = "";
-        let songName = song.replace(this.songBaseUrl, "");
-        // console.log(songName);
-        Object.keys(this.songParts).forEach( (key) => {
-            if (this.songParts[key].includes(songName)) {
-                ret = this.messages[""+key];
-                // console.log(ret);
-            };
-
-        });
-
-        return ret;
-    }
-
+    /**
+     * Plays the count in file (drumsticks before music starts) <code>number</code> times.
+     *
+     * Playing it once means 4 beats -- 1 bar.
+     *
+     * @param number
+     * @param scene
+     * @param onComplete
+     */
     playCountIn(number, scene, onComplete) {
         if (number == 0) {
             onComplete();
@@ -70,11 +63,22 @@ class SoundMachine {
         this.countIn.play();
 
     }
+
+    /**
+     * Start the drumsticks intro before first song starts
+     * @param number
+     * @param scene
+     * @param onComplete
+     */
     startCountIn(number, scene, onComplete) {
         this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", scene, () => {this.playCountIn(number, scene, onComplete);}, {autoplay: false, loop: false});
     }
 
-
+    /**
+     * Changes the current song. The next one is already buffered so that it can be played without delay.
+     * @param curSong
+     * @param scene
+     */
     songChain(curSong, scene) {
         if (!scene) return;
 
@@ -89,14 +93,8 @@ class SoundMachine {
         };
 
         curSong.play();
-//        console.log("part duration: " + (new Date().getTime() - this.startTimestamp));
         this.startTimestamp = new Date().getTime();
-//        console.log("Sound Beat: " + this.startTimestamp); // first beats
-//        this.beatInterval = setInterval(() =>
-//            {
-//            let time = new Date().getTime() - this.startTimestamp;
-//            console.log("Sound Beat: " + time);
-//        }, this.beattime);
+
         this.curSong = curSong;
         if (game) {
             game.startLightSwitching();
@@ -107,17 +105,22 @@ class SoundMachine {
             game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
             if (game.isReady()) game.gameMode.text = msg;
         }
-        // this.currentSong = new BABYLON.Sound("current", curSong, scene, null, {autoplay: true, loop: false});
-        // let nextSong = this.getRandomPart();
-        // this.currentSong.onended = () => {this.songChain(nextSong, scene);};
 
     }
 
+    /**
+     * Get time since start
+     * @returns {number}
+     */
     getCurrentTime() {
         return new Date().getTime() - this.startTimestamp;
     }
 
-
+    /**
+     * Checks if the given timestamp is on a beat +-tolerance.
+     * @param time
+     * @returns {boolean}
+     */
     isOnBeat(time) {
         if (!this.curSong) {
             return false;
@@ -126,6 +129,14 @@ class SoundMachine {
         return timeOffset <= this.tolerance / 2 || timeOffset >= this.beattime - this.tolerance / 2;
     }
 
+    /**
+     * Checks if the given timestamp is on a bar +-tolerance
+     *
+     * Unused!!
+     *
+     * @param time
+     * @returns {boolean}
+     */
     isOnBar(time) {
         if (!this.curSong) {
             return false;
@@ -135,14 +146,6 @@ class SoundMachine {
     }
 
     clear(){
-        clearInterval(this.beatInterval);
-    }
-
-    startLoop(scene) {
-        // console.log(scene);
-        // let songUrl = this.getRandomPart();
-        // let curSong = new BABYLON.Sound("current", , scene, () => {this.songChain(curSong, scene);}, {autoplay: false, loop: false});
-        // curSong.songUrl = songUrl;
     }
 
 }

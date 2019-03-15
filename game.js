@@ -92,6 +92,9 @@ class Game {
 
     }
 
+    /**
+     * Builds the stage and all it's components
+     */
     createScene() {
 
         // Create the scene space
@@ -384,6 +387,12 @@ class Game {
         this.hud.addControl(gameMode);
     }
 
+    /**
+     * Displays messages like the game over message, the game won message and streak messages.
+     * @param msg
+     * @param location
+     * @param onFinishAnimation
+     */
     showUserMessage(msg, location = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation = null) {
 
         let myTempHud = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -433,21 +442,35 @@ class Game {
 
     }
 
+    /**
+     * Is used to update the score of player 1
+     * @param score
+     */
     setPlayerOneScore(score) {
         this.playerOneScoreLabel.text = "Player 1: " + score;
     }
 
+    /**
+     * Is used to update the score of player 2
+     * @param score
+     */
     setPlayerTwoScore(score) {
         this.playerTwoScoreLabel.text = score + " : Player 2";
     }
 
+    /**
+     * Updates the scores of both players
+     */
     updatePlayerScores() {
         // console.log(this.playerOneScoreLabel);
         if (this.playerOneScoreLabel) this.playerOneScoreLabel.text = "Player 1: " + this.playerStats.player1.score;
         if (this.playerTwoScoreLabel) this.playerTwoScoreLabel.text = this.playerStats.player2.score + " : Player 2";
     }
 
-    // input: "left", "right"
+    /**
+     * Start the firework animation on the given location ("left", or "right")
+     * @param location "left", or "right"
+     */
     startFirework(location) {
 
         console.log(location);
@@ -456,8 +479,6 @@ class Game {
             if (!this.leftFirework) {
                 this.leftFirework = this.fireworkHelper.createParticles(this.scene, {x: 7.5, y: 0, z: 4}, false, 3);
             } else {
-                console.log("in here");
-                console.log(this.leftFirework);
                 this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
                 this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
             }
@@ -472,7 +493,10 @@ class Game {
         }
     }
 
-    // input: "left", "right"
+    /**
+     * Stops the firework animation on the given location ("left", or "right")
+     * @param location "left", or "right"
+     */
     stopFirework(location) {
 
         if (location === "left" && this.leftFirework) {
@@ -495,6 +519,9 @@ class Game {
         }, 500);
     }
 
+    /**
+     * Toggles lighting from left to right and vice versa
+     */
     toggleGreenRed() {
         if (this.flash3.intensity == 1) {
             this.switchOffGreen();
@@ -525,18 +552,11 @@ class Game {
         this.flash2.intensity = 0;
     }
 
-    headUpTriggered() {
-        let currentTime = new Date().getTime();
-        let bangInterval = currentTime - this.lastHeadUp;
-        console.log(bangInterval + "; last currentTime: " + this.lastHeadUp + "; currentTime: " + currentTime);
-
-        if (bangInterval > 900 && bangInterval < 1100) {
-            this.playerStats.player1.score += 1;
-        }
-        this.lastHeadUp = currentTime;
-
-    }
-
+    /**
+     * Is called each beat by the pose detector. This is where all the score is calculated.
+     * @param timestamp
+     * @param action
+     */
     actionDetected(timestamp, action) {
         console.log("action: " + action + ", timestamp: " + timestamp);
 
@@ -578,6 +598,9 @@ class Game {
 
     }
 
+    /**
+     * Is triggered to start the game when the scene is loaded
+     */
     onLoad() {
         this.playerStats.player1.score = this.startingScore;
         this.playerStats.player2.score = this.startingScore;

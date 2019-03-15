@@ -77,7 +77,7 @@ class PoseDetector {
         }
 
 //        if (this.debug) {
-            this.detectPoses();
+        this.detectPoses();
 //        }
     }
 

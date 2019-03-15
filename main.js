@@ -141,14 +141,3 @@ window.addEventListener("resize", function () {
     engine.resize();
 });
 
-window.addEventListener("headup", function () {
-    console.log("head up");
-
-    if (game != null && game.isReady()) {
-        game.headUpTriggered();
-    }
-});
-
-window.addEventListener("headdown", function () {
-    console.log("head down")
-});
