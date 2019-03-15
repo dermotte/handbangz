@@ -7,9 +7,13 @@ class SoundMachine {
 
         this.songBaseUrl = "assets/music/songs/";
         this.songParts = {
-            slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
-            fast: ["Headbangz_song1_toms.mp3"],
-            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
+//            slow: ["drumsticks.wav"],
+            slow: ["Headbangz_song1.mp3"],
+            fast: [],
+            silent: []
+//            slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
+//            fast: ["Headbangz_song1_toms.mp3"],
+//            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
         };
 
         this.startTimestamp;
@@ -91,8 +95,13 @@ class SoundMachine {
         curSong.onended = () => {
             this.songChain(nextSong, scene);
         };
+        
+        curSong.onstarted = () => {
+            console.log("SONG STARTED");
+        }
 
         curSong.play();
+        
         this.startTimestamp = new Date().getTime();
 
         this.curSong = curSong;

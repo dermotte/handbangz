@@ -5,7 +5,6 @@ class Player {
         this.nosePositions = [];
         this.rightWristPositions = [];
         this.leftWristPositions = [];
-//        this.state = "DOWN"
     }
 
 }

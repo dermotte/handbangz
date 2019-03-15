@@ -86,9 +86,9 @@ class Game {
         this.soundMachine = new SoundMachine();
         // this.currentSong = null;
 
-        let videoElement = document.getElementById('videostream');
-        this.poseDetector = new PoseDetector(250, videoElement, 640, 360);
-        this.poseDetector.loadPoseNet();
+        let videoElement = document.getElementById('videostream');        
+        let samplerate = this.soundMachine.beattime / 2;
+        this.poseDetector = new PoseDetector(samplerate, videoElement, 640, 360);
 
     }
 
@@ -332,6 +332,9 @@ class Game {
         //this.videoWall.material = videoWallMaterial;
 
         this.scene = scene;
+        
+        console.log("START");
+        
     }
 
     addHUD() {
@@ -517,6 +520,7 @@ class Game {
         this.flashlightInterval = setInterval(() => {
             this.toggleGreenRed();
         }, 500);
+        this.toggleGreenRed();
     }
 
     /**
@@ -557,8 +561,10 @@ class Game {
      * @param timestamp
      * @param action
      */
-    actionDetected(timestamp, action) {
-        console.log("action: " + action + ", timestamp: " + timestamp);
+    actionDetected(timestamp, action, playerName) {
+//        console.log("action: " + action + ", timestamp: " + timestamp);
+
+        // TODO consider player
 
         let points = -1;
 
@@ -607,11 +613,12 @@ class Game {
         // preload first song
         let songUrl = this.soundMachine.getRandomPart();
         let curSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
-        curSong.songUrl = songUrl;
+        curSong.songUrl = songUrl;        
         this.soundMachine.startCountIn(2, this.scene, () => {
                     this.soundMachine.songChain(curSong, this.scene);
                     this.leftActorVideo.play();
                     this.rightActorVideo.play();
+                    this.poseDetector.start();
             }
         );
 
@@ -688,6 +695,7 @@ class Game {
 
         let onFinishAnimation = () => {
             this.soundMachine.clear();
+            this.poseDetector.stop();
             // DON'T DELETE: delay scene disposal due to render issues
             setTimeout( () => {setNewScene(end);}, 0);
         };
@@ -729,7 +737,7 @@ class Game {
             this.playerStats.player2.onFire = false;
         }
 
-        // Bang notifiaction
+        // Bang notification
         if (this.playerStats.player1.bangNotification != null) {
             this.notifyBang(1, this.playerStats.player1.bangNotification == "CORRECT");
             this.playerStats.player1.bangNotification = null;
@@ -794,6 +802,7 @@ class Game {
         }
         // console.log("--------------------------------------- current");
         // console.log(this.currentModes);
+        this.currentModes = [this.modes.bang];
         return this.currentModes;
     }
 
