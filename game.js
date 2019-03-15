@@ -618,15 +618,28 @@ class Game {
     }
 
     // YOU DIRTY CHEATER!
+    /**
+     * Just a test method, when + is pressed
+     * @param score
+     */
     setScore(score) {
         this.playerStats.player1.score = score;
         // this.playerStats.player2.score = score;
     }
 
+    /**
+     * Just a test method, when + is pressed
+     * @param score
+     */
     addToStreak(score) {
         this.playerStats.player1.hitsInARow += score;
     }
 
+    /**
+     * Does the eye flashing
+     * @param player
+     * @param corrrect
+     */
     notifyBang(player, corrrect) {
         //console.log("Bang notification for player " + player + " is " + corrrect);
         let eye = player == 1 ? this.leftEye : this.rightEye;
@@ -657,6 +670,10 @@ class Game {
 
     }
 
+    /**
+     * Is a check for switching scenes. Scene switching should only be done if scene is ready.
+     * @returns {*}
+     */
     isReady() {
         return (this.scene && this.scene.isReady());
     }
@@ -760,6 +777,11 @@ class Game {
 
     }
 
+    /**
+     * This method define which gestures have to be performed.
+     * @param songUrl
+     * @returns {Array}
+     */
     switchModes(songUrl) {
         this.currentModes = [];
         let numModes = Math.floor(Math.random() * 2) + 1; // rnd int betw 1 and 2
@@ -775,6 +797,9 @@ class Game {
         return this.currentModes;
     }
 
+    /**
+     * Cleanup which should be called when scene is dispatched
+     */
     dispose() {
         clearInterval(this.flashlightInterval);
         this.soundMachine.clear();
