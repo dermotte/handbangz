@@ -1,5 +1,6 @@
 class SoundMachine {
-    constructor() {
+    constructor(scene) {
+        this.scene = scene;
         this.tempo = 120;
         this.beattime = 60000/this.tempo;
         this.bartime = this.beattime * 4;
@@ -8,12 +9,21 @@ class SoundMachine {
         this.songBaseUrl = "assets/music/songs/";
         this.songParts = {
 //            slow: ["drumsticks.wav"],
-            slow: ["Headbangz_song1.mp3"],
-            fast: [],
-            silent: []
-//            slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
-//            fast: ["Headbangz_song1_toms.mp3"],
-//            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
+//            slow: ["Headbangz_song1.mp3"],
+//            fast: [],
+//            silent: []
+            slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
+            fast: ["Headbangz_song1_toms.mp3"],
+            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
+        };
+        
+        this.shouts = {
+            bang: new BABYLON.Sound("bangShout", "assets/music/shouts/bang.mp3", this.scene, null, {autoplay: false, loop: false}),
+            horn: new BABYLON.Sound("bangShout", "assets/music/shouts/horn.mp3", this.scene, null, {autoplay: false, loop: false}),
+            dHorn: new BABYLON.Sound("bangShout", "assets/music/shouts/dHorn.mp3", this.scene, null, {autoplay: false, loop: false}),
+            light: new BABYLON.Sound("bangShout", "assets/music/shouts/light.mp3", this.scene, null, {autoplay: false, loop: false}),
+            gameOver: new BABYLON.Sound("bangShout", "assets/music/shouts/fool.mp3", this.scene, null, {autoplay: false, loop: false}),
+            gameWon: new BABYLON.Sound("bangShout", "assets/music/shouts/rockstar.mp3", this.scene, null, {autoplay: false, loop: false})
         };
 
         this.startTimestamp;
@@ -52,17 +62,16 @@ class SoundMachine {
      * Playing it once means 4 beats -- 1 bar.
      *
      * @param number
-     * @param scene
      * @param onComplete
      */
-    playCountIn(number, scene, onComplete) {
+    playCountIn(number, onComplete) {
         if (number == 0) {
             onComplete();
             return;
         };
         number--;
         this.countIn.onended = () => {
-            this.playCountIn(number, scene, onComplete);
+            this.playCountIn(number, onComplete);
         };
         this.countIn.play();
 
@@ -74,8 +83,12 @@ class SoundMachine {
      * @param scene
      * @param onComplete
      */
-    startCountIn(number, scene, onComplete) {
-        this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", scene, () => {this.playCountIn(number, scene, onComplete);}, {autoplay: false, loop: false});
+    startCountIn(number, startMode, onComplete) {
+        this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", this.scene, () => {this.playCountIn(number, onComplete);}, {autoplay: false, loop: false});
+        // note: drumsticks.wav is played number times (2)!
+        setTimeout(() => {
+            this.shouts[startMode.key].play();
+        }, (number-1) * 2000);
     }
 
     /**
@@ -83,17 +96,19 @@ class SoundMachine {
      * @param curSong
      * @param scene
      */
-    songChain(curSong, scene) {
-        if (!scene) return;
+    songChain(curSong, curMode) {
+        if (!this.scene) return;
+
+        let nextMode = game.getRandomMode();
 
         // console.log("Song: ");
         // console.log(curSong);
 
         let songUrl = this.getRandomPart();
-        let nextSong = new BABYLON.Sound("current", songUrl, scene, null, {autoplay: false, loop: false});
-        nextSong.songUrl = songUrl;
+        let nextSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});        
+           
         curSong.onended = () => {
-            this.songChain(nextSong, scene);
+            this.songChain(nextSong, nextMode);
         };
         
         curSong.onstarted = () => {
@@ -101,16 +116,16 @@ class SoundMachine {
         }
 
         curSong.play();
+        setTimeout(() => {
+            this.shouts[nextMode.key].play();
+        }, 14000);  // we know that each song part is 16 seconds (8 bars with 120 bpm) -> TODO make it better
         
         this.startTimestamp = new Date().getTime();
 
         this.curSong = curSong;
         if (game) {
-            game.startLightSwitching();
-            let curModes = game.switchModes(curSong.songUrl);
-            let msg = curModes[0];
-            for (let i=1; i< curModes.length; i++) msg += " & " + curModes[i];
-            msg += "!!";
+            game.startLightSwitching();            
+            let msg = curMode.msg;
             game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);
             if (game.isReady()) game.gameMode.text = msg;
         }

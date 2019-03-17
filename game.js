@@ -1,7 +1,6 @@
 class Game {
     constructor() {
         this.scene;
-
         // stage objects
         this.floor;
         this.stagebox;
@@ -74,22 +73,20 @@ class Game {
         this.startingScore = 50;
         this.gameOver = false;
         this.modes = {
-                bang: "Bang",
-                // dBang: "Double Bang",
-                horn: "Evil Horns",
-                // light: "Light",
-                dHorn: "Very Evil Horns"
+            bang: {key: "bang", msg: "Bang", actions: ["bang"]},            
+            horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},            
+            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
+            light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
-        this.currentModes = [];
+        this.currentMode;
 
         // sound
-        this.soundMachine = new SoundMachine();
+        this.soundMachine;
         // this.currentSong = null;
 
-        let videoElement = document.getElementById('videostream');        
-        let samplerate = this.soundMachine.beattime / 2;
+        let videoElement = document.getElementById('videostream');
+        let samplerate = 250; // this.soundMachine.beattime / 2;
         this.poseDetector = new PoseDetector(samplerate, videoElement, 640, 360);
-
     }
 
     /**
@@ -99,6 +96,8 @@ class Game {
 
         // Create the scene space
         var scene = new BABYLON.Scene(engine);
+
+        this.soundMachine = new SoundMachine(scene);
 
         // Add a camera to the scene and attach it to the canvas
         var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, 3 * Math.PI / 8, 10, new BABYLON.Vector3(0, 5, 7), scene);
@@ -216,8 +215,8 @@ class Game {
             task.loadedMeshes[0].position = new BABYLON.Vector3(0, 8, 2);
             task.loadedMeshes[1].position = new BABYLON.Vector3(0, 8, 2);
             task.loadedMeshes[2].position = new BABYLON.Vector3(0, 8, 2);
-            task.loadedMeshes[2].rotation.y= Math.PI/2;
-            task.loadedMeshes[0].rotation.y= Math.PI;
+            task.loadedMeshes[2].rotation.y = Math.PI / 2;
+            task.loadedMeshes[0].rotation.y = Math.PI;
 
             task.loadedMeshes[0].material.maxSimultaneousLights = 8;
             task.loadedMeshes[1].material.maxSimultaneousLights = 8;
@@ -310,7 +309,7 @@ class Game {
 
 
         // Eyes for the scull
-        this.leftEye= BABYLON.MeshBuilder.CreateSphere("leftEye", {diameter: 0.4}, scene);
+        this.leftEye = BABYLON.MeshBuilder.CreateSphere("leftEye", {diameter: 0.4}, scene);
         this.leftEye.position.x = 0.30
         this.leftEye.position.y = 1.6;
         this.leftEye.position.z = 2;
@@ -318,7 +317,7 @@ class Game {
         leftEyeMat.specularColor = new BABYLON.Color3(0, 0, 0);
         leftEyeMat.maxSimultaneousLights = 1;
         this.leftEye.material = leftEyeMat;
-        this.rightEye= BABYLON.MeshBuilder.CreateSphere("rightEye", {diameter: 0.4}, scene);
+        this.rightEye = BABYLON.MeshBuilder.CreateSphere("rightEye", {diameter: 0.4}, scene);
         this.rightEye.position.x = -0.23;
         this.rightEye.position.y = 1.6;
         this.rightEye.position.z = 2;
@@ -332,9 +331,9 @@ class Game {
         //this.videoWall.material = videoWallMaterial;
 
         this.scene = scene;
-        
+
         console.log("START");
-        
+
     }
 
     addHUD() {
@@ -440,7 +439,8 @@ class Game {
                 () => {
             tempMessage.dispose();
             myTempHud.dispose();
-            if (onFinishAnimation) onFinishAnimation();
+            if (onFinishAnimation)
+                onFinishAnimation();
         });
 
     }
@@ -466,8 +466,10 @@ class Game {
      */
     updatePlayerScores() {
         // console.log(this.playerOneScoreLabel);
-        if (this.playerOneScoreLabel) this.playerOneScoreLabel.text = "Player 1: " + this.playerStats.player1.score;
-        if (this.playerTwoScoreLabel) this.playerTwoScoreLabel.text = this.playerStats.player2.score + " : Player 2";
+        if (this.playerOneScoreLabel)
+            this.playerOneScoreLabel.text = "Player 1: " + this.playerStats.player1.score;
+        if (this.playerTwoScoreLabel)
+            this.playerTwoScoreLabel.text = this.playerStats.player2.score + " : Player 2";
     }
 
     /**
@@ -485,8 +487,7 @@ class Game {
                 this.leftFirework.getEmittedParticleSystems()[0].emitRate = 350;
                 this.leftFirework.getEmittedParticleSystems()[1].emitRate = 350;
             }
-        }
-        else if (location === "right") {
+        } else if (location === "right") {
             if (!this.rightFirework) {
                 this.rightFirework = this.fireworkHelper.createParticles(this.scene, {x: -7.5, y: 0, z: 4}, false, 3);
             } else {
@@ -571,18 +572,18 @@ class Game {
         if (action.length < 1) {
             this.playerStats.player1.hitsInARow = 0;
             this.playerStats.player1.bangNotification = "INCORRECT";
-        }
-        else {
+        } else {
             // check if one is correct
             let correctCount = 0;
             for (let key of action) {
                 for (let key2 of this.currentModes) {
-                    if (this.modes[key] === key2) correctCount++;
+                    if (this.modes[key] === key2)
+                        correctCount++;
                 }
             }
 
             if (this.currentModes.length == 1) {
-                correctCount*=2;
+                correctCount *= 2;
             }
             points += correctCount;
 
@@ -591,8 +592,8 @@ class Game {
 
                 // Check if streak is 5, 10 or 20
                 if (this.playerStats.player1.hitsInARow == 5 ||
-                    this.playerStats.player1.hitsInARow == 10 ||
-                    this.playerStats.player1.hitsInARow == 20) {
+                        this.playerStats.player1.hitsInARow == 10 ||
+                        this.playerStats.player1.hitsInARow == 20) {
                     this.playerStats.player1.score += 10;
                     this.playerStats.player1.streakNotification = true;
                 }
@@ -612,14 +613,14 @@ class Game {
         this.playerStats.player2.score = this.startingScore;
         // preload first song
         let songUrl = this.soundMachine.getRandomPart();
-        let curSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
-        curSong.songUrl = songUrl;        
-        this.soundMachine.startCountIn(2, this.scene, () => {
-                    this.soundMachine.songChain(curSong, this.scene);
-                    this.leftActorVideo.play();
-                    this.rightActorVideo.play();
-                    this.poseDetector.start();
-            }
+        let startSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
+        let startMode = this.getRandomMode();
+        this.soundMachine.startCountIn(2, startMode, () => {
+            this.soundMachine.songChain(startSong, startMode);
+            this.leftActorVideo.play();
+            this.rightActorVideo.play();
+            this.poseDetector.start();
+        }
         );
 
     }
@@ -687,9 +688,11 @@ class Game {
 
     render() {
 
-        if (this.scene) this.scene.render();
+        if (this.scene)
+            this.scene.render();
 
-        if (this.gameOver) return;
+        if (this.gameOver)
+            return;
 
         this.updatePlayerScores();
 
@@ -697,7 +700,9 @@ class Game {
             this.soundMachine.clear();
             this.poseDetector.stop();
             // DON'T DELETE: delay scene disposal due to render issues
-            setTimeout( () => {setNewScene(end);}, 0);
+            setTimeout(() => {
+                setNewScene(end);
+            }, 0);
         };
 
 
@@ -706,15 +711,17 @@ class Game {
         {
             let msg = "";
             console.log("fool");
-            if (this.playerStats.player1.score <= this.loseScore) msg += "Player 1 is a fool!! ";
-            if (this.playerStats.player2.score <= this.loseScore) msg += "Player 2 is a fool!! ";
+            if (this.playerStats.player1.score <= this.loseScore)
+                msg += "Player 1 is a fool!! ";
+            if (this.playerStats.player2.score <= this.loseScore)
+                msg += "Player 2 is a fool!! ";
             end.playerOneScore = this.playerStats.player1.score;
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = msg;
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
-                onFinishAnimation
-            );
+                    onFinishAnimation
+                    );
 
         }
 
@@ -732,7 +739,7 @@ class Game {
             this.playerStats.player2.onFire = true;
             this.startFirework("right");
             this.showUserMessage("Player 2 is on fire!");
-        } else if (this.playerStats.player2.score < this.fireWorkScore)  {
+        } else if (this.playerStats.player2.score < this.fireWorkScore) {
             this.stopFirework("right");
             this.playerStats.player2.onFire = false;
         }
@@ -785,25 +792,13 @@ class Game {
 
     }
 
-    /**
-     * This method define which gestures have to be performed.
-     * @param songUrl
+    /**     
      * @returns {Array}
      */
-    switchModes(songUrl) {
-        this.currentModes = [];
-        let numModes = Math.floor(Math.random() * 2) + 1; // rnd int betw 1 and 2
-        for (let i=0;i<numModes;i++){
-            let keys = Object.keys(this.modes);
-            let rndKeyIndex = Math.floor(Math.random() * (keys.length-1)) + 1;
-            let newMode = this.modes[keys[""+rndKeyIndex]];
-            if (i > 0 && this.currentModes[i-1] === newMode) newMode = this.modes[keys[""+(rndKeyIndex+1) % keys.length]];
-            this.currentModes.push(newMode);
-        }
-        // console.log("--------------------------------------- current");
-        // console.log(this.currentModes);
-        this.currentModes = [this.modes.bang];
-        return this.currentModes;
+    getRandomMode() {
+        let modeKeys = Object.keys(this.modes);
+        let randomKey = modeKeys[Math.floor(Math.random() * modeKeys.length)];
+        return this.modes[randomKey];
     }
 
     /**
