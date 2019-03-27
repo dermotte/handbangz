@@ -122,8 +122,9 @@ class SoundMachine {
         
         this.startTimestamp = new Date().getTime();
 
-        this.curSong = curSong;
+        this.curSong = curSong;        
         if (game) {
+            game.currentMode = curMode;
             game.startLightSwitching();            
             let msg = curMode.msg;
             game.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_TOP);

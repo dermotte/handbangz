@@ -73,10 +73,11 @@ class Game {
         this.startingScore = 50;
         this.gameOver = false;
         this.modes = {
-            bang: {key: "bang", msg: "Bang", actions: ["bang"]},            
-            horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},            
-            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
-            light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            bang: {key: "bang", msg: "Bang", actions: ["bang"]},
+            horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},
+            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]}
+            //,
+//            light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
         this.currentMode;
 
@@ -562,43 +563,46 @@ class Game {
      * @param timestamp
      * @param action
      */
-    actionDetected(timestamp, action, playerName) {
+    actionDetected(timestamp, actions, playerName) {
 //        console.log("action: " + action + ", timestamp: " + timestamp);
 
-        // TODO consider player
+        // TODO consider player 1/2
 
-        let points = -1;
+        let points = 0;
+        let correct = true;
 
-        if (action.length < 1) {
-            this.playerStats.player1.hitsInARow = 0;
-            this.playerStats.player1.bangNotification = "INCORRECT";
+        // exactly the required actions of the current mode have to be fulfilled, 
+        // otherwise the move is considered incorrect
+        let a1 = actions.sort();
+        let a2 = this.currentMode.actions.sort();
+        if (a1.length === a2.length) {
+            for (let i = 0; i < a1.length; i++) {
+                if (a1[i] !== a2[i]) {
+                    correct = false;
+                    break;
+                }
+            }
         } else {
-            // check if one is correct
-            let correctCount = 0;
-            for (let key of action) {
-                for (let key2 of this.currentModes) {
-                    if (this.modes[key] === key2)
-                        correctCount++;
-                }
+            correct = false;
+        }
+
+        if (correct) {
+            points = 1;
+            this.playerStats.player1.bangNotification = "CORRECT";
+            this.playerStats.player1.hitsInARow++;
+
+            // Check if streak is 5, 10 or 20
+            if (this.playerStats.player1.hitsInARow == 5 ||
+                    this.playerStats.player1.hitsInARow == 10 ||
+                    this.playerStats.player1.hitsInARow == 20) {
+                this.playerStats.player1.score += 10;
+                this.playerStats.player1.streakNotification = true;
             }
 
-            if (this.currentModes.length == 1) {
-                correctCount *= 2;
-            }
-            points += correctCount;
-
-            if (correctCount > 0) {
-                this.playerStats.player1.hitsInARow++;
-
-                // Check if streak is 5, 10 or 20
-                if (this.playerStats.player1.hitsInARow == 5 ||
-                        this.playerStats.player1.hitsInARow == 10 ||
-                        this.playerStats.player1.hitsInARow == 20) {
-                    this.playerStats.player1.score += 10;
-                    this.playerStats.player1.streakNotification = true;
-                }
-                this.playerStats.player1.bangNotification = "CORRECT";
-            }
+        } else {
+            points = -1;
+            this.playerStats.player1.bangNotification = "INCORRECT";
+            this.playerStats.player1.hitsInARow = 0;
         }
 
         this.playerStats.player1.score += points;

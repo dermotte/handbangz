@@ -14,6 +14,11 @@ class PoseDetector {
         this.minPartConfidence = 0.5;
         this.nmsRadius = 20.0;
 
+        // controls the required amount of head motion for a bang 
+        // (lower value -> more motion required)
+        // TODO find good value
+        this.bangSensitivity = 50;
+
         this.fps = 25;
         this.video;
         this.net;
@@ -177,43 +182,49 @@ class PoseDetector {
     // determines the action(s) of a given pose for one player
     recognizeActions(playerName, pose, timestamp) {
 
-        if (playerName == "player2") return;    // TODO remove
+        if (playerName == "player2")
+            return;    // TODO remove to enable multiplayer
 
         let player = this.players[playerName];
         let actions = [];
 
-        // quantize nose position to 100 steps
-        let noseY = Math.round(pose.keypoints.nose.position.y / this.videoHeight * 100);
-        player.nosePositions.push({ts:timestamp, pos: noseY});
+        // quantize nose position to n steps
+        let noseY = Math.round(pose.keypoints.nose.position.y / this.videoHeight * this.bangSensitivity);
+        player.nosePositions.push({ts: timestamp, pos: noseY});
 
         // TODO why does it work with negation?? should be the other way round...!!!
-        if (player.nosePositions.length > 2 && !game.soundMachine.isOnBeat(timestamp)) {
-            let y_1 = player.nosePositions[player.nosePositions.length - 2].pos;
-            let y_2 = player.nosePositions[player.nosePositions.length - 3].pos;
+        if (!game.soundMachine.isOnBeat(timestamp)) {
+            if (player.nosePositions.length > 2) {
+                let y_1 = player.nosePositions[player.nosePositions.length - 2].pos;
+                let y_2 = player.nosePositions[player.nosePositions.length - 3].pos;
 
-            if (noseY < y_1 && y_1 < y_2) {
-                actions.push("bang");
-//                console.log(nose, y_1, y_2);
-                console.log(player.nosePositions.slice(player.nosePositions.length - 10));
-            } else if (noseY > y_1 && y_1 > y_2) {
-                actions.push("bang");
-//                console.log(nose, y_1, y_2);
-                console.log(player.nosePositions.slice(player.nosePositions.length - 10));
-            } else {
-//                    game.actionDetected(timestamp, "fail");
-//                        console.log("WTFog");
-//                console.error(nose, y_1, y_2);
-                console.error(player.nosePositions.slice(player.nosePositions.length - 10));
+                if (noseY > y_1 && y_1 > y_2) { // moving down
+                    if (!player.prevHeadDirection || player.prevHeadDirection === "up") {
+                        actions.push("bang");
+                    }
+                    player.prevHeadDirection = "down";
+                } else if (noseY < y_1 && y_1 < y_2) { // moving up
+                    if (!player.prevHeadDirection || player.prevHeadDirection === "down") {
+                        actions.push("bang");
+                    }
+                    player.prevHeadDirection = "up";
+                }
             }
+
+            // detect horns
+            let rightWrist = pose.keypoints.rightWrist.position.y;
+            let leftWrist = pose.keypoints.leftWrist.position.y;
+            let rightShoulder = pose.keypoints.rightShoulder.position.y;
+            let leftShoulder = pose.keypoints.leftShoulder.position.y;
+
+            if (rightWrist < rightShoulder && leftWrist < leftShoulder) {
+                actions.push("dHorn");
+            } else if (rightWrist < rightShoulder || leftWrist < leftShoulder) {
+                actions.push("horn");
+            }
+
             game.actionDetected(timestamp, actions, playerName);
         }
-
-
-//        this.minPartConfidence
-//        console.log(timestamp + ":" + nose);
-
-
-
     }
 
 }
