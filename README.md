@@ -1,16 +1,18 @@
 # HeadBangz
-Art follows Brütal Legends / Guitar Hero. 
+Art follows Brütal Legends / Guitar Hero.
 
-Sub title: If you don't have a headache after playing, you are doing it wrong.
+Subtitle: **If you don't have a headache after playing, you are doing it wrong**
 
 See all the moves at the YouTube Video: https://www.youtube.com/watch?v=z_1TzJ93xWY
+
+To play HeadBangZ visit: https://dermotte.github.io/headbangz/
 
 ## Input / Game Mechanics
 
 ### Input
 People perform moves with the rhythm of the music. Typical move it the _Bang_. For slower section one can use a _Lighter_ and move it in front of the camera. Once the beat turns double bass slaps and double kick drums, one can go for the _Double Bang_.
 
-Additional input features are the Horns, a move performed with the fingers, and the Very Evil Horns, performed with both hands. 
+Additional input features are the Horns, a move performed with the fingers, and the Very Evil Horns, performed with both hands.
 
 * Bang
 * Double Bang
@@ -23,8 +25,6 @@ Additional input features are the Horns, a move performed with the fingers, and 
 * Drum Improv
 * The 'V's
 * Air Guitar
-
-For debugging we use the gamepad, OpenCV JS should be the final option. 
 
 ### Shouts
 Extra encouraging sounds to be played in the game
@@ -41,7 +41,6 @@ Extra encouraging sounds to be played in the game
 ### Progression in the Game
 
 1. Fool
-1. Pussy
 1. Softie
 1. Real Fan
 1. Roadie
@@ -60,19 +59,19 @@ Extra encouraging sounds to be played in the game
 * Game (Stage)
 * End (Result / Highscore)
 
-## Art
+## Artwork
 
 ### Logo
 In the typical Hard Rock style of the 90s HeadBangZ ( -> John)
 
 ## Credits
 
-Tanja Heideman - Master of Puppets
-John NA Brown - Chrome & Blades
-Philipp Moll - Stage Diver
-Sabrina Kletz - Pirate Programmer
-Andi Leibetseder - Eating Guitars for Breakfast
-Bernd Münzer - Rhythmist & Bassist
-Mathias Lux - The Man
-Armin Lippitz - Hard Rock Consulting Inc.
-Georg Wieser - VERT pUSHER
+- Tanja Heideman - Master of Puppets
+- John NA Brown - Chrome & Blades
+- Philipp Moll - Stage Diver
+- Sabrina Kletz - Pirate Programmer
+- Andi Leibetseder - Eating Guitars for Breakfast
+- Bernd Münzer - Rhythmist & Bassist
+- Mathias Lux - The Man
+- Armin Lippitz - Hard Rock Consulting Inc.
+- Georg Wieser - VERT pUSHER
