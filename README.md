@@ -1,5 +1,5 @@
 # HeadBangz
-Art follows Brütal Legends / Guitar Hero.
+Art follows [Brütal Legends](https://en.wikipedia.org/wiki/Br%C3%BCtal_Legend) / [Guitar Hero](https://en.wikipedia.org/wiki/Guitar_Hero).
 
 Subtitle: **If you don't have a headache after playing, you are doing it wrong**
 
