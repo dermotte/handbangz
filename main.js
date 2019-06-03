@@ -101,20 +101,20 @@ function handleActionKeys (event) {
         {
             case "ArrowUp":
                 menu.state += 2;
-                menu.state = menu.state%3;
+                menu.state = menu.state % 3;
                 break;
             case "ArrowDown":
                 menu.state += 1;
-                menu.state = menu.state%3;
+                menu.state = menu.state % 3;
                 break;
             case "Enter":
                 // set to the new scene:
                 let newScene = null;
-                if (menu.state == 0) {
+                if (menu.state === menu.STATE_GAME) {
                     newScene = game;
-                } else if (menu.state == 1) {
+                } else if (menu.state === menu.STATE_CREDITS) {
                     newScene = credits;
-                } else if (menu.state == 2) {
+                } else if (menu.state === menu.STATE_INSTRUCTIONS) {
                     newScene = instructions;
                 }
                 setNewScene(newScene);

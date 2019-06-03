@@ -1,5 +1,9 @@
 class Menu {
 
+    STATE_GAME = 0;
+    STATE_CREDITS = 1;
+    STATE_INSTRUCTIONS = 2;
+
     constructor() {
         this.scene;
         this.state;
@@ -34,19 +38,20 @@ class Menu {
 
         // scene.meshes[2].position.y = -2
         let assetsManager = new BABYLON.AssetsManager(scene);
+        let self = this;
         let meshTask = assetsManager.addMeshTask("task01", "", "assets/models/", "Play.obj");
         meshTask.onSuccess = function (task) {
-            this.play = task.loadedMeshes[0];
+            self.play = task.loadedMeshes[0];
             task.loadedMeshes[0].position = new BABYLON.Vector3(-3, 0, 2);
         };
         meshTask = assetsManager.addMeshTask("task02", "", "assets/models/", "Credits.obj");
         meshTask.onSuccess = function (task) {
-            this.credits = task.loadedMeshes[0];
+            self.credits = task.loadedMeshes[0];
             task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -1, 2);
         };
         meshTask = assetsManager.addMeshTask("task03", "", "assets/models/", "Instructions.obj");
         meshTask.onSuccess = function (task) {
-            this.intro = task.loadedMeshes[0];
+            self.intro = task.loadedMeshes[0];
             task.loadedMeshes[0].position = new BABYLON.Vector3(-3, -2, 2);
         };
         meshTask = assetsManager.addMeshTask("task05", "", "assets/models/", "hb_logo.obj");
@@ -77,18 +82,22 @@ class Menu {
     }
 
     render() {
-        if (this.state == 0)
-            this.scene.meshes[3].position.z = 0;
-        else
-            this.scene.meshes[3].position.z = 2;
-        if (this.state == 1)
-            this.scene.meshes[4].position.z = 0;
-        else
-            this.scene.meshes[4].position.z = 2;
-        if (this.state == 2)
-            this.scene.meshes[5].position.z = 0;
-        else
-            this.scene.meshes[5].position.z = 1.5;
+
+        let playMeshPos = (this.state === this.STATE_GAME) ? 0 : 2;
+        if (this.play) {
+            this.play.position.z = playMeshPos;
+        }
+
+        let creditsMeshPos = (this.state === this.STATE_CREDITS) ? 0 : 2;
+        if (this.credits) {
+            this.credits.position.z = creditsMeshPos;
+        }
+
+        let instructionsMeshPos = (this.state === this.STATE_INSTRUCTIONS) ? 0 : 2;
+        if (this.intro) {
+            this.intro.position.z = instructionsMeshPos;
+        }
+
         this.scene.render();
     }
 
