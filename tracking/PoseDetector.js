@@ -212,15 +212,38 @@ class PoseDetector {
             }
 
             // detect horns
-            let rightWrist = pose.keypoints.rightWrist.position.y;
-            let leftWrist = pose.keypoints.leftWrist.position.y;
-            let rightShoulder = pose.keypoints.rightShoulder.position.y;
-            let leftShoulder = pose.keypoints.leftShoulder.position.y;
+            let rightWrist = pose.keypoints.rightWrist.position;
+            let leftWrist = pose.keypoints.leftWrist.position;
+            let rightShoulder = pose.keypoints.rightShoulder.position;
+            let leftShoulder = pose.keypoints.leftShoulder.position;
 
-            if (rightWrist < rightShoulder && leftWrist < leftShoulder) {
+            if (rightWrist.y < rightShoulder.y && leftWrist.y < leftShoulder.y) {
                 actions.push("dHorn");
-            } else if (rightWrist < rightShoulder || leftWrist < leftShoulder) {
+            } else if (rightWrist.y < rightShoulder.y || leftWrist.y < leftShoulder.y) {
                 actions.push("horn");
+            }
+
+            // detect lighter
+            player.rightWristPositions.push(rightWrist);
+            player.leftWristPositions.push(leftWrist);
+            let isLighter = false;
+            if (rightWrist.y < rightShoulder.y) {
+                
+                console.log("right wrist up");
+                
+                if (player.rightWristPositions.length > 1) {
+                    let y_1 = player.rightWristPositions[player.rightWristPositions.length - 1].y;
+                    let y_2 = player.rightWristPositions[player.rightWristPositions.length - 2].y;
+                    console.log(y_1, y_2, Math.abs(y_1 - y_2), this.videoWidth / 10);
+                    if (Math.abs(y_1 - y_2) > this.videoWidth / 10) {
+                        isLighter = true;
+                    }
+                }
+            }
+            if (isLighter) {
+                // in case of lighter, we simply ignore all other actions
+                // (because they might happen unintentionally...)
+                actions = ["light"];
             }
 
             game.actionDetected(timestamp, actions, playerName);

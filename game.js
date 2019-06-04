@@ -75,9 +75,8 @@ class Game {
         this.modes = {
             bang: {key: "bang", msg: "Bang", actions: ["bang"]},
             horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},
-            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]}
-            //,
-//            light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
+            light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
         this.currentMode;
 
@@ -575,6 +574,9 @@ class Game {
         // otherwise the move is considered incorrect
         let a1 = actions.sort();
         let a2 = this.currentMode.actions.sort();
+        
+        console.log(a1, a2);
+        
         if (a1.length === a2.length) {
             for (let i = 0; i < a1.length; i++) {
                 if (a1[i] !== a2[i]) {
