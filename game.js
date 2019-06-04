@@ -572,14 +572,15 @@ class Game {
 
         // exactly the required actions of the current mode have to be fulfilled, 
         // otherwise the move is considered incorrect
-        let a1 = actions.sort();
-        let a2 = this.currentMode.actions.sort();
+        let performedActions = actions.sort();
+        let requiredActions = this.currentMode.actions.sort();
         
-        console.log(a1, a2);
-        
-        if (a1.length === a2.length) {
-            for (let i = 0; i < a1.length; i++) {
-                if (a1[i] !== a2[i]) {
+        console.log(playerName, performedActions, requiredActions);
+
+        // Check if all performed actions were correct
+        if (performedActions.length === requiredActions.length) {
+            for (let i = 0; i < performedActions.length; i++) {
+                if (performedActions[i] !== requiredActions[i]) {
                     correct = false;
                     break;
                 }
@@ -588,26 +589,27 @@ class Game {
             correct = false;
         }
 
+        let playerObject = (playerName == "player1" ? this.playerStats.player1 : this.playerStats.player2);
         if (correct) {
             points = 1;
-            this.playerStats.player1.bangNotification = "CORRECT";
-            this.playerStats.player1.hitsInARow++;
+            playerObject.bangNotification = "CORRECT";
+            playerObject.hitsInARow++;
 
             // Check if streak is 5, 10 or 20
-            if (this.playerStats.player1.hitsInARow == 5 ||
-                    this.playerStats.player1.hitsInARow == 10 ||
-                    this.playerStats.player1.hitsInARow == 20) {
-                this.playerStats.player1.score += 10;
-                this.playerStats.player1.streakNotification = true;
+            if (playerObject.hitsInARow == 5 ||
+                playerObject.hitsInARow == 10 ||
+                playerObject.hitsInARow == 20) {
+                playerObject.score += 10;
+                playerObject.streakNotification = true;
             }
 
         } else {
             points = -1;
-            this.playerStats.player1.bangNotification = "INCORRECT";
-            this.playerStats.player1.hitsInARow = 0;
+            playerObject.bangNotification = "INCORRECT";
+            playerObject.hitsInARow = 0;
         }
 
-        this.playerStats.player1.score += points;
+        playerObject.score += points;
 
     }
 

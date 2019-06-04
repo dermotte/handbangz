@@ -182,9 +182,6 @@ class PoseDetector {
     // determines the action(s) of a given pose for one player
     recognizeActions(playerName, pose, timestamp) {
 
-        if (playerName == "player2")
-            return;    // TODO remove to enable multiplayer
-
         let player = this.players[playerName];
         let actions = [];
 
