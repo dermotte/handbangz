@@ -167,13 +167,13 @@ class PoseDetector {
             poses = poses.sort((a, b) => b.score - a.score);
             if (poses[0].keypoints.nose.position.x < poses[1].keypoints.nose.position.x) {
                 return {
-                    player1: poses[0],
-                    player2: poses[1]
+                    player1: poses[1],
+                    player2: poses[0]
                 }
             } else {
                 return {
-                    player1: poses[1],
-                    player2: poses[0]
+                    player1: poses[0],
+                    player2: poses[1]
                 }
             }
         }
