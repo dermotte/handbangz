@@ -76,7 +76,7 @@ class Game {
             bang: {key: "bang", msg: "Bang", actions: ["bang"]},
             horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},
             dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
-            light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            //light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
         this.currentMode;
 
@@ -731,6 +731,8 @@ class Game {
                     onFinishAnimation
                     );
 
+            this.soundMachine.shouts["gameOver"].play();
+
         }
 
         // start fire
@@ -795,6 +797,8 @@ class Game {
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = displayMessage;
             this.playerStats.wonNotificaiton = true;
+
+            this.soundMachine.shouts["gameWon"].play();
         }
 
 

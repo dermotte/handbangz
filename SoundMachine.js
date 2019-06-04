@@ -22,8 +22,8 @@ class SoundMachine {
             horn: new BABYLON.Sound("bangShout", "assets/music/shouts/horn.mp3", this.scene, null, {autoplay: false, loop: false}),
             dHorn: new BABYLON.Sound("bangShout", "assets/music/shouts/dHorn.mp3", this.scene, null, {autoplay: false, loop: false}),
             light: new BABYLON.Sound("bangShout", "assets/music/shouts/light.mp3", this.scene, null, {autoplay: false, loop: false}),
-            gameOver: new BABYLON.Sound("bangShout", "assets/music/shouts/fool.mp3", this.scene, null, {autoplay: false, loop: false}),
-            gameWon: new BABYLON.Sound("bangShout", "assets/music/shouts/rockstar.mp3", this.scene, null, {autoplay: false, loop: false})
+            gameOver: new BABYLON.Sound("bangShout", "assets/music/shouts/fool.mp3", this.scene, null, {autoplay: false, loop: false, volume: 1.2}),
+            gameWon: new BABYLON.Sound("bangShout", "assets/music/shouts/rockstar.mp3", this.scene, null, {autoplay: false, loop: false, volume: 1.2})
         };
 
         this.startTimestamp;
