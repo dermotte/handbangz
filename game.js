@@ -76,7 +76,7 @@ class Game {
             bang: {key: "bang", msg: "Bang", actions: ["bang"]},
             horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},
             dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
-            //light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
         this.currentMode;
 
@@ -622,7 +622,7 @@ class Game {
         // preload first song
         let songUrl = this.soundMachine.getRandomPart();
         let startSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});
-        let startMode = this.getRandomMode();
+        let startMode = this.modes["bang"];
         this.soundMachine.startCountIn(2, startMode, () => {
             this.soundMachine.songChain(startSong, startMode);
             this.leftActorVideo.play();

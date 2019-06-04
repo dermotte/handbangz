@@ -14,7 +14,8 @@ class SoundMachine {
 //            silent: []
             slow: ["Headbangz_song1.mp3", "Headbangz_song2.mp3", "Headbangz_song2a.mp3", "Headbangz_song2b.mp3"],
             fast: ["Headbangz_song1_toms.mp3"],
-            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3", "Headbangz_song1_lighter.mp3"]
+            silent: ["Headbangz_song1_drums.mp3", "Headbangz_song1_drums_bass.mp3"],
+            lighter: ["Headbangz_song1_lighter.mp3"]
         };
         
         this.shouts = {
@@ -50,6 +51,10 @@ class SoundMachine {
         allSongs = allSongs.concat(this.songParts.fast);
         allSongs = allSongs.concat(this.songParts.silent);
         return this.songBaseUrl + allSongs[this.generateRandomInteger(allSongs.length)];
+    }
+
+    getLighterPart() {
+        return this.songBaseUrl + this.songParts["lighter"][this.generateRandomInteger(this.songParts["lighter"].length)];
     }
 
     generateRandomInteger(max_value) {
@@ -104,8 +109,11 @@ class SoundMachine {
         // console.log("Song: ");
         // console.log(curSong);
 
-        let songUrl = this.getRandomPart();
-        let nextSong = new BABYLON.Sound("current", songUrl, this.scene, null, {autoplay: false, loop: false});        
+        let nextSongUrl = this.getRandomPart();
+        if (nextMode.key === "light") {
+            nextSongUrl = this.getLighterPart();
+        }
+        let nextSong = new BABYLON.Sound("current", nextSongUrl, this.scene, null, {autoplay: false, loop: false});
            
         curSong.onended = () => {
             this.songChain(nextSong, nextMode);
