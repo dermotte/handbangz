@@ -804,11 +804,22 @@ class Game {
 
     }
 
-    /**     
-     * @returns {Array}
+    /**
+     * Returns a next game mode from the available game modes, excluding the previous mode to prevent boring games.
+     * @param previousMode
+     * @returns {*}
      */
-    getRandomMode() {
+    getRandomMode(previousMode) {
         let modeKeys = Object.keys(this.modes);
+
+        // Remove current mode from modeKeys, if the remaing list is not empty
+        if (previousMode !== undefined && modeKeys.length > 1) {
+            var modeIndex = modeKeys.indexOf(previousMode.key);
+            if (modeIndex !== -1) {
+                modeKeys.splice(modeIndex, 1);
+            }
+        }
+
         let randomKey = modeKeys[Math.floor(Math.random() * modeKeys.length)];
         return this.modes[randomKey];
     }
