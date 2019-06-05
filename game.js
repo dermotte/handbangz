@@ -759,7 +759,7 @@ class Game {
             this.notifyBang(1, this.playerStats.player1.bangNotification == "CORRECT");
             this.playerStats.player1.bangNotification = null;
         }
-        if (this.playerStats.player1.bangNotification != null) {
+        if (this.playerStats.player2.bangNotification != null) {
             this.notifyBang(2, this.playerStats.player2.bangNotification == "CORRECT");
             this.playerStats.player2.bangNotification = null;
         }
