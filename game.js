@@ -103,8 +103,8 @@ class Game {
 
         // Add a camera to the scene and attach it to the canvas
         var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, 3 * Math.PI / 8, 10, new BABYLON.Vector3(0, 5, 7), scene);
-        // comment the scene to fix the camera
-        camera.attachControl(canvas, true);
+        // Uncomment this to enable mouse control of the camera
+        //camera.attachControl(canvas, true);
 
         // Build stage ----------------------------------------------------------------------------------
 
