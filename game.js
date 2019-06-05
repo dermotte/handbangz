@@ -64,9 +64,11 @@ class Game {
                 streakNotification: null,
                 won: false
             },
-            wonNotificaiton: false
+            wonNotificaiton: false,
+            gameStartTime: null,
+            gameEndTime: null
         }
-        this.winScore = 200;
+        this.winScore = 150;
         this.loseScore = 0;
         this.fireWorkScore = 80;
         this.lastHeadUp = new Date().getTime();
@@ -628,6 +630,7 @@ class Game {
             this.leftActorVideo.play();
             this.rightActorVideo.play();
             this.poseDetector.start();
+            this.playerStats.gameStartTime = new Date().getTime();
         }
         );
 
@@ -778,9 +781,16 @@ class Game {
         if (!this.playerStats.wonNotificaiton && !this.playerStats.player1.won && !this.playerStats.player2.won) {
             if (this.playerStats.player1.score >= this.winScore) {
                 this.playerStats.player1.won = true;
+                if (this.playerStats.gameEndTime == null) {
+                    this.playerStats.gameEndTime = new Date().getTime();
+                }
             }
             if (this.playerStats.player2.score >= this.winScore) {
                 this.playerStats.player2.won = true;
+
+                if (this.playerStats.gameEndTime == null) {
+                    this.playerStats.gameEndTime = new Date().getTime();
+                }
             }
         }
         if (!this.playerStats.wonNotificaiton && (this.playerStats.player1.won || this.playerStats.player2.won)) {
@@ -796,6 +806,7 @@ class Game {
             end.playerOneScore = this.playerStats.player1.score;
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = displayMessage;
+            end.gameTime = (this.playerStats.gameEndTime - this.playerStats.gameStartTime);
             this.playerStats.wonNotificaiton = true;
 
             this.soundMachine.shouts["gameWon"].play();

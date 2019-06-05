@@ -6,9 +6,11 @@ class TheEnd {
         this.playerTwoScoreLabel;
         this.playerOneScoreLabel;
         this.centerMessageLabel;
+        this.scoreMessageLabel;
         this.displayMessage;
         this.playerOneScore;
         this.playerTwoScore;
+        this.gameTime;
     }
 
     createScene () {
@@ -50,6 +52,12 @@ class TheEnd {
         if (this.playerOneScoreLabel) this.playerOneScoreLabel.text = "Player 1: " + this.playerOneScore;
         if (this.playerTwoScoreLabel) this.playerTwoScoreLabel.text = this.playerTwoScore + " : Player 2";
         if (this.centerMessageLabel) this.centerMessageLabel.text = this.displayMessage;
+
+        if (this.scoreMessageLabel && this.gameTime) {
+            // The final score is the time it took to win the game. The time is shown in seconds * 10
+            let score = this.gameTime / 100;
+            this.scoreMessageLabel.text = "Score: " + Math.round(score);
+        }
     }
 
     addHUD() {
@@ -88,7 +96,7 @@ class TheEnd {
         this.playerOneScoreLabel = playerOneScore;
         this.hud.addControl(playerOneScore);
 
-        var centerMessage = new BABYLON.GUI.TextBlock("playerOneScore");
+        var centerMessage = new BABYLON.GUI.TextBlock("centerMessage");
         centerMessage.text = "";
         centerMessage.fontSize = 90;
         centerMessage.color = '#A5400C';
@@ -102,6 +110,21 @@ class TheEnd {
         centerMessage.paddingTop = "100px";
         this.centerMessageLabel = centerMessage;
         this.hud.addControl(centerMessage);
+
+        var scoreMessage = new BABYLON.GUI.TextBlock("scoreMessage");
+        scoreMessage.text = "";
+        scoreMessage.fontSize = 70;
+        scoreMessage.color = '#732c08';
+        scoreMessage.fontFamily = 'New Rocker';
+        scoreMessage.shadowBlur = 3;
+        scoreMessage.shadowColor = "#000";
+        scoreMessage.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_CENTER;
+        scoreMessage.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
+        scoreMessage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        scoreMessage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        scoreMessage.paddingTop = "350px";
+        this.scoreMessageLabel = scoreMessage;
+        this.hud.addControl(scoreMessage);
     }
 
     onLoad() {
