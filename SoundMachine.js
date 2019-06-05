@@ -104,7 +104,7 @@ class SoundMachine {
     songChain(curSong, curMode) {
         if (!this.scene) return;
 
-        let nextMode = game.getRandomMode(game.currentMode);
+        let nextMode = game.getRandomMode(curMode);
 
         // console.log("Song: ");
         // console.log(curSong);
