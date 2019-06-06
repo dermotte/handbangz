@@ -75,10 +75,10 @@ class Game {
         this.startingScore = 50;
         this.gameOver = false;
         this.modes = {
-            bang: {key: "bang", msg: "Bang", actions: ["bang"]},
-            horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"]},
-            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"]},
-            light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            bang: {key: "bang", msg: "Bang", actions: ["bang"], actionMsg: "Bang"},
+            horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"], actionMsg: "Evil Horn"},
+            dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"], actionMsg: "Very Evil Horn"},
+            // light: {key: "light", msg: "Show me the light", actions: ["light"]}
         };
         this.currentMode;
 
@@ -307,7 +307,7 @@ class Game {
         BABYLON.VideoTexture.CreateFromWebCam(scene, function (videoTexture) {
             videoWallMaterial.emissiveTexture = videoTexture;
             plane.material = videoWallMaterial;
-        }, {maxWidth: 256, maxHeight: 256});
+        }, {});
 
 
         // Eyes for the scull
@@ -389,6 +389,42 @@ class Game {
         gameMode.paddingBottom = "30px";
         this.gameMode = gameMode;
         this.hud.addControl(gameMode);
+
+        var playerOneAction = new BABYLON.GUI.TextBlock("playerOneAction");
+        playerOneAction.text = "";
+        playerOneAction.hasAlpha = true;
+        playerOneAction.alpha = 1.0;
+        playerOneAction.fontSize = 35;
+        playerOneAction.color = '#A5400C';
+        playerOneAction.fontFamily = 'New Rocker';
+        playerOneAction.shadowBlur = 3;
+        playerOneAction.shadowColor = "#000";
+        playerOneAction.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
+        playerOneAction.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_LEFT;
+        playerOneAction.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        playerOneAction.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        playerOneAction.paddingLeft = "200px";
+        playerOneAction.paddingBottom = "200px";
+        this.playerOneActionLabel = playerOneAction;
+        this.hud.addControl(playerOneAction);
+
+        var playerTwoAction = new BABYLON.GUI.TextBlock("playerTwoAction");
+        playerTwoAction.text = "";
+        playerTwoAction.hasAlpha = true;
+        playerTwoAction.alpha = 1.0;
+        playerTwoAction.fontSize = 35;
+        playerTwoAction.color = '#A5400C';
+        playerTwoAction.fontFamily = 'New Rocker';
+        playerTwoAction.shadowBlur = 3;
+        playerTwoAction.shadowColor = "#000";
+        playerTwoAction.textVerticalAlignment = BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM;
+        playerTwoAction.textHorizontalAlignment = BABYLON.GUI.TextBlock.HORIZONTAL_ALIGNMENT_RIGHT;
+        playerTwoAction.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        playerTwoAction.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        playerTwoAction.paddingRight = "200px";
+        playerTwoAction.paddingBottom = "200px";
+        this.playerTwoActionLabel = playerTwoAction;
+        this.hud.addControl(playerTwoAction);
     }
 
     /**
@@ -611,6 +647,38 @@ class Game {
 
         playerObject.score += points;
 
+        let actionLabel = (playerName == "player1" ? this.playerOneActionLabel : this.playerTwoActionLabel);
+        this.performedActionFading(actionLabel, performedActions);
+    }
+
+    performedActionFading(label, performedActions) {
+        var actionsLbls = [];
+        for (var i = 0; i < performedActions.length; i++) {
+            actionsLbls.push(this.modes[performedActions[i]].actionMsg);
+        }
+
+        let actionString = actionsLbls.join();
+
+        let actionFadeAnimation = new BABYLON.Animation("actionFadeAnimation", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+        let keys = [];
+        keys.push({
+            frame: 0,
+            value: 1
+        });
+        keys.push({
+            frame: 5,
+            value: 0.7
+        });
+        keys.push({
+            frame: 10,
+            value: 0.0
+        });
+        actionFadeAnimation.setKeys(keys);
+        label.animations = [];
+        label.animations.push(actionFadeAnimation);
+        label.alpha = 1;
+        label.text = actionString;
+        this.scene.beginAnimation(label, 0, 10, false);
     }
 
     /**

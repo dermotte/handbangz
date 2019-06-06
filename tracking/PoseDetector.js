@@ -220,7 +220,7 @@ class PoseDetector {
                 actions.push("horn");
             }
 
-            // detect lighter
+           /* // detect lighter
             player.rightWristPositions.push(rightWrist);
             player.leftWristPositions.push(leftWrist);
             let isLighter = false;
@@ -241,7 +241,7 @@ class PoseDetector {
                 // in case of lighter, we simply ignore all other actions
                 // (because they might happen unintentionally...)
                 actions = ["light"];
-            }
+            }*/
 
             game.actionDetected(timestamp, actions, playerName);
         }
