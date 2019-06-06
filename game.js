@@ -480,8 +480,6 @@ class Game {
      */
     startFirework(location) {
 
-        console.log(location);
-
         if (location === "left") {
             if (!this.leftFirework) {
                 this.leftFirework = this.fireworkHelper.createParticles(this.scene, {x: 7.5, y: 0, z: 4}, false, 3);

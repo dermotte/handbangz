@@ -123,7 +123,6 @@ function handleActionKeys (event) {
                 break;
 
         }
-        console.log(menu.state);
     }
 }
 
