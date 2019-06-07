@@ -13,6 +13,7 @@ class PoseDetector {
         this.minPoseConfidence = 0.2;
         this.minPartConfidence = 0.5;
         this.nmsRadius = 20.0;
+        this.lighterThreshold = 20;
 
         // controls the required amount of head motion for a bang 
         // (lower value -> more motion required)
@@ -220,31 +221,68 @@ class PoseDetector {
                 actions.push("horn");
             }
 
-           /* // detect lighter
+           // ##### detect lighter #####
             player.rightWristPositions.push(rightWrist);
             player.leftWristPositions.push(leftWrist);
             let isLighter = false;
-            if (rightWrist.y < rightShoulder.y) {
+
+            // Reset lighter detection if hand is below shoulder
+            if (rightWrist.y >= rightShoulder.y) { // Hand is below shoulder
+                player.rightWristPositions = []
+            }
+            if (leftWrist.y >= leftShoulder.y) { // Hand is below shoulder
+                player.leftWristPositions = []
+            }
+
+            if (rightWrist.y < rightShoulder.y) { // Right hand is up
                 
-                console.log("right wrist up");
-                
-                if (player.rightWristPositions.length > 1) {
-                    let y_1 = player.rightWristPositions[player.rightWristPositions.length - 1].y;
-                    let y_2 = player.rightWristPositions[player.rightWristPositions.length - 2].y;
-                    console.log(y_1, y_2, Math.abs(y_1 - y_2), this.videoWidth / 10);
-                    if (Math.abs(y_1 - y_2) > this.videoWidth / 10) {
-                        isLighter = true;
-                    }
+                isLighter = this.checkLighter(player.rightWristPositions);
+
+            } else if (leftWrist.y < leftShoulder.y) { // Right hand is up
+
+                isLighter = this.checkLighter(player.leftWristPositions);
+
+            }
+
+            let result = new PoseDetectorResults(timestamp, playerName, actions, isLighter);
+            game.actionDetected(result);
+        }
+    }
+
+    checkLighter(wristPositions) {
+        let isLighter = false;
+        // The player should not be penalized when he starts the lighter
+        if (wristPositions.length < 3) {
+            isLighter = true;
+        }
+
+        if (wristPositions.length >= 3) {
+
+            // At least three of the last 5 positions must be strictly monotonically increasing or decreasing
+            // 3 of 5 is, because the player sometimes needs to change the direction
+            var wristXVector = [];
+            wristXVector.push(wristPositions[wristPositions.length - 1].x);
+            wristXVector.push(wristPositions[wristPositions.length - 2].x);
+            wristXVector.push(wristPositions[wristPositions.length - 3].x);
+            if (wristPositions.length >= 4) {
+                wristXVector.push(wristPositions[wristPositions.length - 4].x);
+            }
+            if (wristPositions.length >= 5) {
+                wristXVector.push(wristPositions[wristPositions.length - 5].x);
+            }
+
+            for (var i = 2; i < wristXVector.length; i++) {
+                if (wristXVector[i - 2] < wristXVector[i - 1] && Math.abs(wristXVector[i - 2] - wristXVector[i - 1]) > this.lighterThreshold &&
+                    wristXVector[i - 1] < wristXVector[i] && Math.abs(wristXVector[i - 1] - wristXVector[i]) > this.lighterThreshold ||
+                    wristXVector[i - 2] > wristXVector[i - 1] && Math.abs(wristXVector[i - 2] - wristXVector[i - 1]) > this.lighterThreshold &&
+                    wristXVector[i - 1] > wristXVector[i] && Math.abs(wristXVector[i - 1] - wristXVector[i]) > this.lighterThreshold) {
+                    isLighter = true;
+                    break;
                 }
             }
-            if (isLighter) {
-                // in case of lighter, we simply ignore all other actions
-                // (because they might happen unintentionally...)
-                actions = ["light"];
-            }*/
-
-            game.actionDetected(timestamp, actions, playerName);
         }
+
+        return isLighter;
     }
 
 }

@@ -78,7 +78,7 @@ class Game {
             bang: {key: "bang", msg: "Bang", actions: ["bang"], actionMsg: "Bang"},
             horn: {key: "horn", msg: "Bang & Evil Horns", actions: ["horn", "bang"], actionMsg: "Evil Horn"},
             dHorn: {key: "dHorn", msg: "Bang & Very Evil Horns", actions: ["dHorn", "bang"], actionMsg: "Very Evil Horn"},
-            // light: {key: "light", msg: "Show me the light", actions: ["light"]}
+            light: {key: "light", msg: "Show me the light", actions: ["light"], actionMsg: "Lighter"}
         };
         this.currentMode;
 
@@ -598,20 +598,18 @@ class Game {
      * @param timestamp
      * @param action
      */
-    actionDetected(timestamp, actions, playerName) {
+    actionDetected(poseDetectorResult, timestamp, actions, playerName) {
 //        console.log("action: " + action + ", timestamp: " + timestamp);
-
-        // TODO consider player 1/2
 
         let points = 0;
         let correct = true;
 
         // exactly the required actions of the current mode have to be fulfilled, 
         // otherwise the move is considered incorrect
-        let performedActions = actions.sort();
+        let performedActions = poseDetectorResult.gestures.sort();
         let requiredActions = this.currentMode.actions.sort();
         
-        console.log(playerName, performedActions, requiredActions);
+        console.log(poseDetectorResult.player, performedActions, requiredActions);
 
         // Check if all performed actions were correct
         if (performedActions.length === requiredActions.length) {
@@ -625,7 +623,16 @@ class Game {
             correct = false;
         }
 
-        let playerObject = (playerName == "player1" ? this.playerStats.player1 : this.playerStats.player2);
+        // Check lighter if lighter action required
+        if (requiredActions.length == 1 && requiredActions[0] == "light") {
+            if (poseDetectorResult.isLighter) {
+                performedActions = ["light"];
+                correct = true;
+            }
+        }
+
+        // Check streaks and increase/decrease score
+        let playerObject = (poseDetectorResult.isPlayerOne() ? this.playerStats.player1 : this.playerStats.player2);
         if (correct) {
             points = 1;
             playerObject.bangNotification = "CORRECT";
@@ -644,14 +651,15 @@ class Game {
             playerObject.bangNotification = "INCORRECT";
             playerObject.hitsInARow = 0;
         }
-
         playerObject.score += points;
 
-        let actionLabel = (playerName == "player1" ? this.playerOneActionLabel : this.playerTwoActionLabel);
+        // Show the performed action
+        let actionLabel = (poseDetectorResult.isPlayerOne() ? this.playerOneActionLabel : this.playerTwoActionLabel);
         this.performedActionFading(actionLabel, performedActions);
     }
 
     performedActionFading(label, performedActions) {
+        console.log(performedActions);
         var actionsLbls = [];
         for (var i = 0; i < performedActions.length; i++) {
             actionsLbls.push(this.modes[performedActions[i]].actionMsg);
