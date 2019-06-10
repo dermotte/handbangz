@@ -781,7 +781,7 @@ class Game {
 
         this.updatePlayerScores();
 
-        let onFinishAnimation = () => {
+        let enterEndScene = () => {
             this.soundMachine.clear();
             this.poseDetector.stop();
             // DON'T DELETE: delay scene disposal due to render issues
@@ -805,11 +805,11 @@ class Game {
             end.displayMessage = msg;
             end.rockstar = false;
             this.gameOver = true;
-            this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
-                    onFinishAnimation
-                    );
+            
+            // we don't need to show an animated message here, it is better to immediately go to the end screen...
+//            this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, enterEndScene);
 
-//            this.soundMachine.shouts["gameOver"].play();
+            enterEndScene();
 
         }
 
@@ -877,7 +877,9 @@ class Game {
             } else {
                 displayMessage = "DRAW! Both players are ROCKSTARS!";
             }
-            this.showUserMessage(displayMessage, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, onFinishAnimation);
+            
+            // we don't need to show an animated message here, it is better to immediately go to the end screen...
+//            this.showUserMessage(displayMessage, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM, enterEndScene);
             end.playerOneScore = this.playerStats.player1.score;
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = displayMessage;
@@ -885,7 +887,8 @@ class Game {
             end.rockstar = true;
             this.playerStats.wonNotificaiton = true;
 
-//            this.soundMachine.shouts["gameWon"].play();
+            enterEndScene();
+
         }
 
 
