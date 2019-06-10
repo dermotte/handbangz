@@ -89,11 +89,13 @@ class SoundMachine {
      * @param onComplete
      */
     startCountIn(number, startMode, onComplete) {
-        this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", this.scene, () => {this.playCountIn(number, onComplete);}, {autoplay: false, loop: false});
-        // note: drumsticks.wav is played number times (2)!
-        setTimeout(() => {
-            this.shouts[startMode.key].play();
-        }, (number-1) * 2000);
+        this.countIn = new BABYLON.Sound("current", "assets/music/fx/drumsticks.wav", this.scene, () => {
+            this.playCountIn(number, onComplete);
+            // note: drumsticks.wav is played n number times (2)!
+            setTimeout(() => {
+                this.shouts[startMode.key].play();
+            }, (number-1) * 2000);
+        }, {autoplay: false, loop: false});        
     }
 
     /**
