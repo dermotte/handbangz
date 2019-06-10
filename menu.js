@@ -16,6 +16,8 @@ class Menu {
 
         // Create the scene space
         let scene = new BABYLON.Scene(engine);
+        
+        this.introSong = new BABYLON.Sound("bangShout", "assets/music/intro.mp3", scene, null, {autoplay: true, loop: true});
 
         // Add a camera to the scene and attach it to the canvas
         let camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 0, -6), scene);
@@ -74,7 +76,7 @@ class Menu {
     }
 
     onLoad() {
-        this.state = 0;
+        this.state = 0;        
     }
 
     isReady() {

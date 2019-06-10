@@ -803,12 +803,13 @@ class Game {
             end.playerOneScore = this.playerStats.player1.score;
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = msg;
+            end.rockstar = false;
             this.gameOver = true;
             this.showUserMessage(msg, BABYLON.GUI.TextBlock.VERTICAL_ALIGNMENT_BOTTOM,
                     onFinishAnimation
                     );
 
-            this.soundMachine.shouts["gameOver"].play();
+//            this.soundMachine.shouts["gameOver"].play();
 
         }
 
@@ -881,9 +882,10 @@ class Game {
             end.playerTwoScore = this.playerStats.player2.score;
             end.displayMessage = displayMessage;
             end.gameTime = (this.playerStats.gameEndTime - this.playerStats.gameStartTime);
+            end.rockstar = true;
             this.playerStats.wonNotificaiton = true;
 
-            this.soundMachine.shouts["gameWon"].play();
+//            this.soundMachine.shouts["gameWon"].play();
         }
 
 

@@ -11,12 +11,20 @@ class TheEnd {
         this.playerOneScore;
         this.playerTwoScore;
         this.gameTime;
+        this.rockstar; // boolean that signals which sound to play (rockstar or fool)
     }
 
     createScene () {
 
         // Create the scene space
         var scene = new BABYLON.Scene(engine);
+        
+        let soundPath = "assets/music/shouts/fool.mp3";
+        if (this.rockstar) {
+            soundPath = "assets/music/shouts/rockstar.mp3";
+        }
+        
+        new BABYLON.Sound("bangShout", soundPath, scene, null, {autoplay: true, loop: false, volume: 1});        
 
         // Add a camera to the scene and attach it to the canvas
         var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
