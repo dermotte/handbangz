@@ -639,9 +639,7 @@ class Game {
             playerObject.hitsInARow++;
 
             // Check if streak is 5, 10 or 20
-            if (playerObject.hitsInARow == 5 ||
-                playerObject.hitsInARow == 10 ||
-                playerObject.hitsInARow == 20) {
+            if (playerObject.hitsInARow > 0 && playerObject.hitsInARow % 10 == 0) {
                 playerObject.score += 10;
                 playerObject.streakNotification = true;
             }
