@@ -62,8 +62,13 @@ class TheEnd {
         if (this.centerMessageLabel) this.centerMessageLabel.text = this.displayMessage;
 
         if (this.scoreMessageLabel && this.gameTime) {
-            // The final score is the time it took to win the game. The time is shown in seconds * 10
-            let score = this.gameTime / 100;
+            // The fastest possible time is 25 seconds. This is normalized to 1000 points. Every 500 ms slower results
+            // in one point reduction.
+
+            let highscore = 25*2; // 25 seconds, 2 beats per second
+            let gametime = this.gameTime / 1000 * 2; // game time in beats
+
+            let score = 1000 - (gametime - highscore);
             this.scoreMessageLabel.text = "Score: " + Math.round(score);
         }
     }
